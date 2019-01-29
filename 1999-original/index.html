@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+	<head>		
+		<link type="text/css" rel="stylesheet" href="tetris.css"/>
+		<script type="text/javascript" src="tetris.js"></script>
+		<script type="text/javascript">
+			document.onkeydown = keyHit;
+			function keyHit(evt)
+			{
+				evt = evt || window.event;
+				TRT_fnOnKeyDown(evt.keyCode);
+			}
+		</script>
+	</head>
+	<BODY onload="TRT_fnRend(12,22)">
+		<div>
+			<table><tr>
+				<td><table id="TRT_ID_BOARD" BORDER="1" CELLPADDING="0" cellspacing="0"></table></td>
+				<td width="30"></td>
+				<td><table id="TRT_ID_CONTROLLER" BORDER="1" CELLPADDING="0" cellspacing="0"></table></td>
+			</tr></table>
+		</div>		
+	</BODY>
+</HTML>
