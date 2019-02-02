@@ -8,23 +8,37 @@ class TrtGame extends React.Component {
 	constructor(props) {
 		super(props);	
 		this.state = {
-		  shapeIndex: 0, 
-		  colorIndex: 0,
-		  angleIndex: 0
+		  shapeStyle: {index:0, color:0, angle:0},
+		  boardDimentions: {width:6, height:10},
+		  shapePosition: {x:3, y:3}
 		};
 	}
-
-	handleKeypadChange = event => {	  
+	
+	handleHorizontalStep = (event) => {	  
+		console.log('TrtGame.handleHorizontalStep: {'
+				+ ' dx:' + event.dx
+			+ ' }');
+			
+		let newShapePosition = JSON.parse(JSON.stringify(this.state.shapePosition));
+		newShapePosition.x+=event.dx;
+		this.setState({shapePosition: newShapePosition});
+	}
+	
+	handleKeypadChange = (event) => {	  
 		var targetId = event.target.getAttribute('id');
+		let newShapeStyle = JSON.parse(JSON.stringify(this.state.shapeStyle));
 		switch(targetId) {
 			case "ShapeSelector":
-				this.setState({shapeIndex: event.target.value});	  
+				newShapeStyle.index = event.target.value;
+				this.setState({shapeStyle: newShapeStyle});
 				break;
 			case "ColorSelector":
-				this.setState({colorIndex: event.target.value});	  
+				newShapeStyle.color = event.target.value;
+				this.setState({shapeStyle: newShapeStyle});
 				break;
 			case "AngleSelector":
-				this.setState({angleIndex: event.target.value});	  
+				newShapeStyle.angle = event.target.value;
+				this.setState({shapeStyle: newShapeStyle});
 				break;				
 			default:
 				console.warn('unhandled event from' +  targetId);
@@ -37,13 +51,13 @@ class TrtGame extends React.Component {
 		return(
 		  <div onChange={this.handleKeypadChange}>
 			<TrtBoard 
-				rows={numRow} 
-				columns={numCol} 
-				shape_index={this.state.shapeIndex}
-				color_index={this.state.colorIndex}
-				angle_index={this.state.angleIndex}
+				boardDimentions={this.state.boardDimentions} 
+				shapeStyle={this.state.shapeStyle}
+				shapePosition={this.state.shapePosition}
 			/>
-			<TrtKeypad/>
+			<TrtKeypad
+				onHorizontalStep={this.handleHorizontalStep}
+			/>
 		  </div>
 		);	 
 	}

@@ -8,6 +8,19 @@
 class TrtKeypad extends React.Component {
 	constructor(props) {
 		super(props);
+				
+		this.handleStepLeft = this.handleStepLeft.bind(this);
+		this.handleStepRight = this.handleStepRight.bind(this);		
+	}
+	
+	handleStepLeft() {
+		const eventProps = { 'dx': -1 };
+		this.props.onHorizontalStep(eventProps);
+	}
+	
+	handleStepRight() {
+		const eventProps = { 'dx': 1 };
+		this.props.onHorizontalStep(eventProps);
 	}
 
   
@@ -45,6 +58,14 @@ class TrtKeypad extends React.Component {
 						<option value="9">9</option>
 					</select> 
 				</li>
+				
+				<li>
+					<button onClick={this.handleStepLeft}>&lt;--</button>
+				</li>
+				<li>
+					<button onClick={this.handleStepRight}>--&gt;</button>
+				</li>
+				 
 			</ul>
 		</div>)
 	}
