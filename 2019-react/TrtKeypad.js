@@ -16,7 +16,16 @@ class TrtKeypad extends React.Component {
 		<div id='trt-keypad'>
 			<ul>
 				<li>Shape  
-					 <select name="Shapes">
+					 <select id="ShapeSelector" name="Shapes">
+						<option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+					</select> 
+				</li>
+				
+				<li>Color  
+					 <select id="ColorSelector" name="Colors">
 						<option value="0">0</option>
 						<option value="1">1</option>
 						<option value="2">2</option>

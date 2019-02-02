@@ -10,7 +10,8 @@ class TrtBoard extends React.Component {
 	}
 
 	render() {
-		console.log('rendering shape '+ this.props.current_shape);
+		console.log('TrtBoard.render: shape=' + this.props.current_shape + 
+			', color=' + this.props.current_color);
 		
 		let rows = [];
 		for (var row_index = 0; row_index < this.props.rows; row_index++) {
