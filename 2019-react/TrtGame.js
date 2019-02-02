@@ -28,8 +28,8 @@ class TrtGame extends React.Component {
 	}
 
 	render() {
-	  const numRow=10;
-	  const numCol=10;
+	  const numRow=8;
+	  const numCol=8;
 		return(
 		  <div onChange={this.handleKeypadChange}>
 			<TrtBoard 
