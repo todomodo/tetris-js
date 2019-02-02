@@ -7,16 +7,27 @@
 	<meta name="description" content="tetris-js, a learning project from Drago Todorov">
 	<meta name="author" content="Drago Todorov">
 	<link rel="stylesheet" type="text/css" href="trt-style.css"/>
+	
+	<!-- downloaded from https://unpkg.com/react@16.7.0/ -->
+	<script src="react.production.min.js" type="text/javascript"> </script>
+    <script src="react-dom.production.min.js" type="text/javascript"> </script>
+	
+	<!-- downloaded from https://unpkg.com/babel-standalone@6.26.0/ -->
+	<script src="babel.min.js" type="text/javascript"> </script>	
   </head>
+  
   <body>
 
-	<div id="TRT_BOARD"></div>
-    <div id="TRT_CONTROLLER"></div>
+	<div id="trt-game">
+		<div>
+			<table id="trt-board"></table>
+		</div>
+		<div id="trt-keypad"></div>
+	</div>
+    	
+	<script src="trt-board.js" type="text/jsx" > </script>
+    <script src="trt-keypad-1.js" type="text/jsx" > </script>
 
-    <script src="react.production.min.js"></script>
-    <script src="react-dom.production.min.js"></script>
-	<script src="trt-board.js"></script>
-    <script src="trt-controller.js"></script>
 
   </body>
 </html>
