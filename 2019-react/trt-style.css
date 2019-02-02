@@ -2,12 +2,11 @@
 #trt-game {
 	float: left;
     width: 50%;
-	display:flex;
 	align-items:center;
 }
 
 
-#trt-game div{
+#trt-board{
 	border: 1px solid black;	
 	display: inline-block;
 	margin-left:2%;
@@ -15,10 +14,13 @@
 }
 
 #trt-keypad {
+	border: 1px solid black;
 	padding: 10px 10px 10px 0px; 
+	display: inline-block;
+	vertical-align: top;
 }
 
-#trt-board td{
+#trt-squares td{
 	line-height: 3px;
 	vertical-align: middle;
 	height: 23px;
@@ -27,48 +29,48 @@
 	border: 3px groove gray;
 }
 
-#trt-board .color-null {
+#trt-squares .color-null {
 	background-color: white;
 	border: 3px solid white;		
 }
 
-#trt-board .color-0 {
+#trt-squares .color-0 {
 	background-color: FFCCFF;		
 }
 
-#trt-board .color-1 {
+#trt-squares .color-1 {
 	background-color: FFCC00;	
 }
 
-#trt-board .color-2 {
+#trt-squares .color-2 {
 	background-color: FF99FF;	
 }
 
-#trt-board .color-3 {
+#trt-squares .color-3 {
   background-color: #00FFFF;   
 }
   
-#trt-board .color-4 {
+#trt-squares .color-4 {
   background-color: #66CC99; 
 }
   
-#trt-board .color-5 {
+#trt-squares .color-5 {
   background-color: #33FF33; 
 }
 
-#trt-board .color-6 {
+#trt-squares .color-6 {
   background-color: #CC33FF; 
 }
 
-#trt-board .color-7 {
+#trt-squares .color-7 {
   background-color: #66FFCC; 
 }
   
-#trt-board .color-8 {
+#trt-squares .color-8 {
   background-color: #669999; 
 }
 
-#trt-board .color-9 {
+#trt-squares .color-9 {
   background-color: #00FFCC; 
 }
 
