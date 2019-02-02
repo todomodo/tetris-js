@@ -1,10 +1,25 @@
+body p{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+}
 
+.announcement {	
+    width: 50%;
+	text-align: center;
+	margin-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	background-color: antiquewhite;
+}
+	
 #trt-game {
 	float: left;
     width: 50%;
 	align-items:center;
 }
-
 
 #trt-board{
 	border: 1px solid black;	
