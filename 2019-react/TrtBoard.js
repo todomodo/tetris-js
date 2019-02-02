@@ -13,8 +13,9 @@ class TrtBoard extends React.Component {
 		console.log('TrtBoard.constructor: {'
 			+ ' rows:' + this.props.rows
 			+ ', columns:' + this.props.columns
-			+ ', current_shape:' + this.props.current_shape
-			+ ', current_color:' + this.props.current_color
+			+ ', shape_index:' + this.props.shape_index
+			+ ', color_index:' + this.props.color_index
+			+ ', angle_index:' + this.props.angle_index
 		+ ' }');
 		
 		this.state = {
@@ -50,7 +51,10 @@ class TrtBoard extends React.Component {
 			currentShapeIndex: 0,
 			
 			// the current color index
-			currentColorIndex: 0
+			currentColorIndex: 0,
+			
+			// the current angle index
+			currentAngleIndex: 0
 		}
 		
 		/*
@@ -71,7 +75,22 @@ class TrtBoard extends React.Component {
 		this.putPixel=this.putPixel.bind(this);
 		this.paintShape=this.paintShape.bind(this);
 		this.getHtmlClassName=this.getHtmlClassName.bind(this);
+		this.clearBoard=this.clearBoard.bind(this);
 	}
+	
+	/*
+		Clear the board
+	*/
+	clearBoard()
+	{	
+		let colorIndex=0;
+		for (var x = 0; x < this.props.rows; x++) {			
+			for (var y = 0; y < this.props.columns; y++){
+				this.state.board[x][y] = colorIndex;		
+			}			
+		}
+	}
+	
 	
 	/*
 		put one pixel on the board
@@ -114,16 +133,20 @@ class TrtBoard extends React.Component {
 	*/
 	render() {
 		console.log('TrtBoard.render: {'
-			+ ' shape:' + this.props.current_shape
-			+ ', current_color:' + this.props.current_color
+			+ ' shape_index:' + this.props.shape_index
+			+ ', color_index:' + this.props.color_index
+			+ ', angle_index:' + this.props.angle_index
 		+ ' }');
 		
-		//paint the shape
+		// clear old shape
+		this.clearBoard();
+		
+		//paint new shape
 		this.paintShape(
-			this.props.current_shape,
+			this.props.shape_index,
 			this.state.currentShapePosition,
-			0,
-			this.props.current_color);
+			this.props.angle_index,
+			this.props.color_index);
 			
 		//build the HTML table
 		let rows = [];

@@ -8,8 +8,9 @@ class TrtGame extends React.Component {
 	constructor(props) {
 		super(props);	
 		this.state = {
-		  currentShape: '0', 
-		  currentColor: '0'
+		  shapeIndex: 0, 
+		  colorIndex: 0,
+		  angleIndex: 0
 		};
 	}
 
@@ -17,11 +18,14 @@ class TrtGame extends React.Component {
 		var targetId = event.target.getAttribute('id');
 		switch(targetId) {
 			case "ShapeSelector":
-				this.setState({currentShape: event.target.value});	  
+				this.setState({shapeIndex: event.target.value});	  
 				break;
 			case "ColorSelector":
-				this.setState({currentColor: event.target.value});	  
-				break;  
+				this.setState({colorIndex: event.target.value});	  
+				break;
+			case "AngleSelector":
+				this.setState({angleIndex: event.target.value});	  
+				break;				
 			default:
 				console.warn('unhandled event from' +  targetId);
 		} 
@@ -33,8 +37,11 @@ class TrtGame extends React.Component {
 		return(
 		  <div onChange={this.handleKeypadChange}>
 			<TrtBoard 
-				rows={numRow} columns={numCol} current_shape={this.state.currentShape}
-				current_color={this.state.currentColor}
+				rows={numRow} 
+				columns={numCol} 
+				shape_index={this.state.shapeIndex}
+				color_index={this.state.colorIndex}
+				angle_index={this.state.angleIndex}
 			/>
 			<TrtKeypad/>
 		  </div>
