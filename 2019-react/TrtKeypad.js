@@ -16,37 +16,37 @@ class TrtKeypad extends React.Component {
 	
 	handleStepLeft() {
 		const eventProps = { 'dx': -1, 'dy': 0 };
-		this.props.onStep(eventProps);
+		this.props.onShapePositionChange(eventProps);
 	}
 	
 	handleStepRight() {
 		const eventProps = { 'dx': 1, 'dy': 0 };
-		this.props.onStep(eventProps);
+		this.props.onShapePositionChange(eventProps);
 	}
 	
 	handleKeyDown(event){
 		switch(event.keyCode) {
 			case 40:
-				console.log('drop');
-				const eventProps = { 'dx': 0, 'dy': 1 };
-				//this.props.onStep(eventProps);
+				//console.log('drop');
+				this.props.onShapePositionChange({ 'dx': 0, 'dy': 1 });
 				break;
 			case 39:
-				console.log('tight');
+				//console.log('right');
 				this.handleStepRight();
 				break;
 			case 37:
-				console.log('left');
+				//console.log('left');
 				this.handleStepLeft();
 				break;
 			case 38:
-				console.log('rotate');
+				//console.log('rotate');
+				this.props.onShapePositionChange({ 'dx': 0, 'dy': -1 });
 				break;
 			case 32:
-				console.log('restart');
+				//console.log('restart');
 				break;				
 			default:
-				console.warn('unhandled keycode ' +  event.keyCode);
+				// console.warn('unhandled keycode ' +  event.keyCode);
 		} 
 	}
 	
@@ -62,17 +62,29 @@ class TrtKeypad extends React.Component {
 	render() { 
 	  let shape_options = [];
 	  for (var i = 0; i < 14; i++){
-		  shape_options.push(<option value={i}>{i}</option>);
+		  if (this.props.currentShapeStyle.index==i) {
+			  shape_options.push(<option value={i} selected>{i}</option>);
+		  } else {
+			  shape_options.push(<option value={i}>{i}</option>);
+		  }
 	  }
 	  
 	  let color_options = [];
 	  for (var i = 0; i < 10; i++){
-		  color_options.push(<option value={i}>{i}</option>);
+		  if (this.props.currentShapeStyle.color==i) {
+			  color_options.push(<option value={i} selected>{i}</option>);			  
+		  } else {
+			  color_options.push(<option value={i}>{i}</option>);
+		  }
 	  }
 	  
 	  let angle_options = [];
 	  for (var i = 0; i < 4; i++){
-		  angle_options.push(<option value={i}>{i}</option>);
+		  if (this.props.currentShapeStyle.angle==i) {
+			  angle_options.push(<option value={i}>{i}</option>);
+		  } else {
+			  angle_options.push(<option value={i}>{i}</option>);
+		  }
 	  }
 	  
 	  return(

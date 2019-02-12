@@ -119,6 +119,11 @@ const SHAPES = [
 	[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy: 1}, {dx: -1, dy:-1}, {dx: 1, dy:1}]]
 	
 ] 
+
+/*
+	The color of the canvas itself. useful for erasing objects
+*/
+const COLOR_NULL = 0;
 	   
 class TrtBoard extends React.Component {
 			
@@ -132,51 +137,36 @@ class TrtBoard extends React.Component {
 		+ ' }');
 		
 		this.state = {												
-			board: [] // two dimensional array holding the board state
+			canvas: [] // two dimensional array representing the board
 		}
 		
-		// init the board for first use
-		this.initBoard();
+		// init the canvas for first use
+		this.initCanvas();
 	}
 	
 	/*
-		initialize the board array to be of the right dimensions and fill with
+		initialize the canvas array to be of the right dimensions and fill with
 		color=0
 	*/
-	initBoard() {	
-		let colorIndex=0;
+	initCanvas() {	
 		for (var y = 0; y < this.props.boardDimentions.height; y++){
 			let row=[];
 			for (var x = 0; x < this.props.boardDimentions.width; x++) {			
-				row.push(colorIndex);
+				row.push(COLOR_NULL);			
 			}
-			this.state.board.push(row);
-		}
+			this.state.canvas.push(row);					
+		}		
 	}
 	
 	/*
-		Clear the board
-	*/
-	clearBoard() {	
-		let colorIndex=0;
-		for (var x = 0; x < this.props.boardDimentions.width; x++) {			
-			for (var y = 0; y < this.props.boardDimentions.height; y++){
-				const pixelPosition = { 'x': x , 'y': y }				
-				this.putPixel(pixelPosition,colorIndex);		
-			}			
-		}
-	}
-	
-	
-	/*
-		put one "pixel" on the board array
+		put one "pixel" on the canvas
 	*/
 	putPixel(pixelPosition,colorIndex) {	
-		this.state.board[pixelPosition.x][pixelPosition.y] = colorIndex;		
+		this.state.canvas[pixelPosition.y][pixelPosition.x] = colorIndex;		
 	}
 	
 	/*
-		paint one shape on the board array
+		paint one shape on the canvas
 	*/
 	paintShape(shapeStyle, shapePosition) {
 		let shapePixels = SHAPES[shapeStyle.index][shapeStyle.angle];
@@ -191,14 +181,14 @@ class TrtBoard extends React.Component {
 	}
 	
 	/*
-		read one "pixel" from the board array
+		read one "pixel" from the canvas
 	*/
 	getPixel(pixelPosition) {	
-		return this.state.board[pixelPosition.x][pixelPosition.y];
+		return this.state.canvas[pixelPosition.y][pixelPosition.x];
 	}
 	
 	/*
-		returns true if pixel is within board boundaries
+		returns true if pixel is within canvas boundaries
 	*/
 	checkPixel(pixelPosition) {	
 		return (pixelPosition.x >=0) 
@@ -208,7 +198,7 @@ class TrtBoard extends React.Component {
 	}
 	
 	/*
-		returns true if shape is within board boundaries
+		returns true if shape is within canvas boundaries
 	*/
 	checkShape(shapeStyle, shapePosition) {
 		let shapePixels = SHAPES[shapeStyle.index][shapeStyle.angle];
@@ -235,7 +225,7 @@ class TrtBoard extends React.Component {
 					 'color-4', 'color-5', 'color-6', 'color-7', 'color-8', 'color-9'];
 						
 		let colorIndex = this.getPixel(pixelPosition);
-						
+								
 		return classNames[colorIndex];
 	}
 
@@ -243,20 +233,34 @@ class TrtBoard extends React.Component {
 		The react renderer
 	*/
 	render() {
+		/*
 		console.log('TrtBoard.render: {'
-			+ ' shapeStyle:' + JSON.stringify(this.props.shapeStyle)
-			+ ', shapePosition:' + JSON.stringify(this.props.shapePosition)
+			+ 'currentShapePosition:' + JSON.stringify(this.props.currentShapePosition)
+			+ ', currentShapeStyle:' + JSON.stringify(this.props.currentShapeStyle)
+			+ ', nextShapePosition:' + JSON.stringify(this.props.nextShapePosition)
+			+ ', nextShapeStyle:' + JSON.stringify(this.props.nextShapeStyle)
 		+ ' }');
+		*/
 		
-		//check if the shape can be painted
-		if (this.checkShape(this.props.shapeStyle,this.props.shapePosition)) {
-			// clear the board and paint the shape
-			this.clearBoard();
-			this.paintShape(this.props.shapeStyle,this.props.shapePosition);
+		// erase the shape from its current position by re-drawing it with the 
+		// canvas' own color
+		let eraseStyle = JSON.parse(JSON.stringify(this.props.currentShapeStyle));
+		eraseStyle.color = COLOR_NULL;
+		this.paintShape(eraseStyle,this.props.currentShapePosition);
+				
+		// can the shape be painted at its next position?
+		if (this.checkShape(this.props.nextShapeStyle,this.props.nextShapePosition)) {		
+			// yes - paint new shape and notify parent
+			this.paintShape(this.props.nextShapeStyle,this.props.nextShapePosition);
+			const eventProps = {'shapePosition': this.props.nextShapePosition, 'shapeStyle': this.props.nextShapeStyle};
+			this.props.onCanvasUpdate(eventProps);
 		} else {
-			// notify parent about the border violation
-			this.props.onBorderViolation();
+			// no - restore current shape and notify parent
+			this.paintShape(this.props.currentShapeStyle,this.props.currentShapePosition);
+			const eventProps = {'shapePosition': this.props.currentShapePosition, 'shapeStyle': this.props.currentShapeStyle};
+			this.props.onCanvasViolation(eventProps);
 		}
+
 			
 		//build the HTML table
 		let rows = [];
