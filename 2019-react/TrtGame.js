@@ -10,7 +10,8 @@ class TrtGame extends React.Component {
 		this.state = {
 		  shapeStyle: {index:0, color:0, angle:0},
 		  boardDimentions: {width:6, height:10},
-		  shapePosition: {x:3, y:3}
+		  currentShapePosition: {x:3, y:3},
+		  oldShapePosition: {x:3, y:3}
 		};
 	}
 	
@@ -20,10 +21,18 @@ class TrtGame extends React.Component {
 				+ ', dy:' + event.dy
 			+ ' }');
 			
-		let newShapePosition = JSON.parse(JSON.stringify(this.state.shapePosition));
+		let newShapePosition = JSON.parse(JSON.stringify(this.state.currentShapePosition));
 		newShapePosition.x+=event.dx;
 		newShapePosition.y+=event.dy;
-		this.setState({shapePosition: newShapePosition});
+		this.setState({oldShapePosition: this.state.currentShapePosition});
+		this.setState({currentShapePosition: newShapePosition});
+	}
+	
+	handleBorderViolation = () => {	  
+		console.log('TrtGame.handleBorderViolation: {'
+			+ ' }');
+			
+		this.setState({currentShapePosition: this.state.oldShapePosition});
 	}
 	
 	handleKeypadChange = (event) => {	  
@@ -56,10 +65,11 @@ class TrtGame extends React.Component {
 			<TrtBoard 
 				boardDimentions={this.state.boardDimentions} 
 				shapeStyle={this.state.shapeStyle}
-				shapePosition={this.state.shapePosition}
+				shapePosition={this.state.currentShapePosition}
+				onBorderViolation={this.handleBorderViolation}
 			/>
 			<TrtKeypad
-				onStep={this.handleStep}
+				onStep={this.handleStep}				
 			/>
 		  </div>
 		);	 

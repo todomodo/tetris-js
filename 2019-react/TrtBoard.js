@@ -2,9 +2,126 @@
 	The game board is a table, on which shapes are displayed
 */
 'use strict';
+
+/* 
+	shapes defined in relative coordinates, 4 rotations per shape
+*/
+const SHAPES = [
+	//**********
+	//   X X
+	//   X X
+	[[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
+	[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
+	[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
+	[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}]],
+	//**********
+	//   X
+	//   X
+	//   X
+	//   X
+	[[{dx:0, dy:-2}, {dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}],
+	[{dx:-2, dy:0}, {dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}],
+	[{dx:0, dy:-2}, {dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}],
+	[{dx:-2, dy:0}, {dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}]],				
+	//**********
+	//   X X
+	//   X
+	//   X
+	[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:-1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:1}],
+	[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:-1, dy:1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:-1, dy:-1}]],
+	//**********
+	//   X X
+	//     X
+	//     X
+	[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:-1, dy:-1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:-1}],
+	[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:-1, dy:1}]],
+	//**********
+	//   X 
+	//   X X
+	//     X
+	[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:1}],
+	[{dx:1, dy:0}, {dx:2, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
+	[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:1}],
+	[{dx:1, dy:0}, {dx:2, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}]],
+	//**********
+	//     X 
+	//   X X
+	//   X
+	[[{dx:1, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
+	[{dx:1, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}]],
+	//**********
+	//   X 
+	//   X X
+	//   X
+	[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
+	[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:-1, dy:0}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:-1}]],
+	//**********
+	//   X X      (non-standard)
+	//   X        
+	[[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
+	[{dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:1}],
+	[{dx:0, dy:1}, {dx:1, dy:0}, {dx:1, dy:1}],
+	[{dx:0, dy:1}, {dx:0, dy:0}, {dx:1, dy:1}]],
+	//**********
+	//   X        (non-standard)
+	//   X
+	//   X
+	[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}],
+	[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}]],
+	//**********
+	//   X X X    (non-standard)
+	//     X
+	//     X
+	[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:-1, dy:-1}, {dx:1, dy:-1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:-1}, {dx:1, dy:1}],
+	[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}, {dx:-1, dy:1}],
+	[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:-1, dy:1}, {dx:-1, dy:-1}]],
+	//**********
+	//   X   	  (non-standard)
+	// X X X
+	//   X
+	[[{dx:0, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}, {dx:1, dy:0}, {dx:-1, dy:0}],
+	[{dx:0, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}, {dx:1, dy:0}, {dx:-1, dy:0}],
+	[{dx:0, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}, {dx:1, dy:0}, {dx:-1, dy:0}],
+	[{dx:0, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}, {dx:1, dy:0}, {dx:-1, dy:0}]],
+	//**********
+	// X X X	  (non-standard)
+	// X   X
+	[[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy:0}, {dx: -1, dy:-1}, {dx: 1, dy:-1}],
+	[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy:1}, {dx: 1, dy:-1}, {dx: 1, dy:1}],
+	[{dx:-1, dy:-1}, {dx: 0, dy:-1}, {dx:1, dy:-1}, {dx:-1, dy:0}, {dx:1, dy:0}],
+	[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy:1}, {dx: -1, dy:-1}, {dx: -1, dy:1}]],
+	//**********
+	// X		  (non-standard)
+	// X X X
+	//     X   
+	[[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy:0}, {dx: -1, dy:-1}, {dx: 1, dy:1}],
+	[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy:1}, {dx: -1, dy:1}, {dx: 1, dy:-1}],
+	[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy:0}, {dx: -1, dy:-1}, {dx: 1, dy:1}],
+	[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy:1}, {dx: -1, dy:1}, {dx: 1, dy:-1}]],
+	//**********
+	//     X 	  (non-standard)
+	// X X X
+	// X   
+	[[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy: 0}, {dx: 1, dy:-1}, {dx: -1, dy:1}],
+	[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy: 1}, {dx: -1, dy:-1}, {dx: 1, dy:1}],
+	[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy: 0}, {dx: 1, dy:-1}, {dx: -1, dy:1}],
+	[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy: 1}, {dx: -1, dy:-1}, {dx: 1, dy:1}]]
+	
+] 
 	   
 class TrtBoard extends React.Component {
-	
+			
 	/*
 		constructor, where all the initialization happens
 	*/
@@ -14,126 +131,8 @@ class TrtBoard extends React.Component {
 			+ ' boardDimentions:' + JSON.stringify(this.props.boardDimentions)
 		+ ' }');
 		
-		this.state = {
-			/* 
-				shapes defined in relative coordinates, 4 rotations per shape
-			*/
-			shapes: [
-				//**********
-				//   X X
-				//   X X
-				[[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
-				[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
-				[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
-				[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}]],
-				//**********
-				//   X
-				//   X
-				//   X
-				//   X
-				[[{dx:0, dy:-2}, {dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}],
-				[{dx:-2, dy:0}, {dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}],
-				[{dx:0, dy:-2}, {dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}],
-				[{dx:-2, dy:0}, {dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}]],				
-				//**********
-				//   X X
-				//   X
-				//   X
-				[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:-1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:1}],
-				[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:-1, dy:1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:-1, dy:-1}]],
-				//**********
-				//   X X
-				//     X
-				//     X
-				[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:-1, dy:-1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:-1}],
-				[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:-1, dy:1}]],
-				//**********
-				//   X 
-				//   X X
-				//     X
-				[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:1}],
-				[{dx:1, dy:0}, {dx:2, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
-				[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:1}],
-				[{dx:1, dy:0}, {dx:2, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}]],
-				//**********
-				//     X 
-				//   X X
-				//   X
-				[[{dx:1, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}],
-				[{dx:1, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}]],
-				//**********
-				//   X 
-				//   X X
-				//   X
-				[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
-				[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:-1, dy:0}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:-1}]],
-				//**********
-				//   X X      Nonstandart shapes ...
-				//   X        ....  and going clockwise
-				[[{dx:0, dy:0}, {dx:1, dy:0}, {dx:0, dy:1}],
-				[{dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:1}],
-				[{dx:0, dy:1}, {dx:1, dy:0}, {dx:1, dy:1}],
-				[{dx:0, dy:1}, {dx:0, dy:0}, {dx:1, dy:1}]],
-				//**********
-				//   X
-				//   X
-				//   X
-				[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}],
-				[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}]],
-				//**********
-				//   X X X
-				//     X
-				//     X
-				[[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:-1, dy:-1}, {dx:1, dy:-1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:1, dy:-1}, {dx:1, dy:1}],
-				[{dx:0, dy:-1}, {dx:0, dy:0}, {dx:0, dy:1}, {dx:1, dy:1}, {dx:-1, dy:1}],
-				[{dx:-1, dy:0}, {dx:0, dy:0}, {dx:1, dy:0}, {dx:-1, dy:1}, {dx:-1, dy:-1}]],
-				//**********
-				//   X 
-				// X X X
-				//   X
-				[[{dx:0, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}, {dx:1, dy:0}, {dx:-1, dy:0}],
-				[{dx:0, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}, {dx:1, dy:0}, {dx:-1, dy:0}],
-				[{dx:0, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}, {dx:1, dy:0}, {dx:-1, dy:0}],
-				[{dx:0, dy:0}, {dx:0, dy:1}, {dx:0, dy:-1}, {dx:1, dy:0}, {dx:-1, dy:0}]],
-				//**********
-				// X X X
-				// X   X
-				[[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy:0}, {dx: -1, dy:-1}, {dx: 1, dy:-1}],
-				[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy:1}, {dx: 1, dy:-1}, {dx: 1, dy:1}],
-				[{dx:-1, dy:-1}, {dx: 0, dy:-1}, {dx:1, dy:-1}, {dx:-1, dy:0}, {dx:1, dy:0}],
-				[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy:1}, {dx: -1, dy:-1}, {dx: -1, dy:1}]],
-				//**********
-				// X
-				// X X X
-				//     X   
-				[[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy:0}, {dx: -1, dy:-1}, {dx: 1, dy:1}],
-				[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy:1}, {dx: -1, dy:1}, {dx: 1, dy:-1}],
-				[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy:0}, {dx: -1, dy:-1}, {dx: 1, dy:1}],
-				[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy:1}, {dx: -1, dy:1}, {dx: 1, dy:-1}]],
-				//**********
-				//     X 
-				// X X X
-				// X   
-				[[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy: 0}, {dx: 1, dy:-1}, {dx: -1, dy:1}],
-				[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy: 1}, {dx: -1, dy:-1}, {dx: 1, dy:1}],
-				[{dx:0, dy:0}, {dx: -1, dy:0}, {dx: 1, dy: 0}, {dx: 1, dy:-1}, {dx: -1, dy:1}],
-				[{dx:0, dy:0}, {dx: 0, dy:-1}, {dx: 0, dy: 1}, {dx: -1, dy:-1}, {dx: 1, dy:1}]]
-				
-			], // shapes array
-						
-			// two dimensional array holding the board state
-			board: []				
+		this.state = {												
+			board: [] // two dimensional array holding the board state
 		}
 		
 		// init the board for first use
@@ -177,17 +176,10 @@ class TrtBoard extends React.Component {
 	}
 	
 	/*
-		read one "pixel" from the board array
-	*/
-	getPixel(pixelPosition) {	
-		return this.state.board[pixelPosition.x][pixelPosition.y];
-	}
-	
-	/*
 		paint one shape on the board array
 	*/
 	paintShape(shapeStyle, shapePosition) {
-		let shapePixels = this.state.shapes[shapeStyle.index][shapeStyle.angle];
+		let shapePixels = SHAPES[shapeStyle.index][shapeStyle.angle];
 		for (var i = 0; i < shapePixels.length; i++ )
 		{			
 			const pixelPosition = { 
@@ -197,6 +189,43 @@ class TrtBoard extends React.Component {
 			this.putPixel(pixelPosition, shapeStyle.color);
 		}
 	}
+	
+	/*
+		read one "pixel" from the board array
+	*/
+	getPixel(pixelPosition) {	
+		return this.state.board[pixelPosition.x][pixelPosition.y];
+	}
+	
+	/*
+		returns true if pixel is within board boundaries
+	*/
+	checkPixel(pixelPosition) {	
+		return (pixelPosition.x >=0) 
+				&& (pixelPosition.y >=0)
+				&& (pixelPosition.x < this.props.boardDimentions.width)
+				&& (pixelPosition.y < this.props.boardDimentions.height)
+	}
+	
+	/*
+		returns true if shape is within board boundaries
+	*/
+	checkShape(shapeStyle, shapePosition) {
+		let shapePixels = SHAPES[shapeStyle.index][shapeStyle.angle];
+		for (var i = 0; i < shapePixels.length; i++ )
+		{			
+			const pixelPosition = { 
+				'x': shapePosition.x + shapePixels[i].dx, 
+				'y': shapePosition.y + shapePixels[i].dy };
+			
+			if (!this.checkPixel(pixelPosition)) {						
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
 	
 	/*
 		Translate color index to HTML class name which will be used for styling
@@ -219,13 +248,15 @@ class TrtBoard extends React.Component {
 			+ ', shapePosition:' + JSON.stringify(this.props.shapePosition)
 		+ ' }');
 		
-		// clear old shape
-		this.clearBoard();
-		
-		//paint new shape
-		this.paintShape(
-			this.props.shapeStyle,
-			this.props.shapePosition);
+		//check if the shape can be painted
+		if (this.checkShape(this.props.shapeStyle,this.props.shapePosition)) {
+			// clear the board and paint the shape
+			this.clearBoard();
+			this.paintShape(this.props.shapeStyle,this.props.shapePosition);
+		} else {
+			// notify parent about the border violation
+			this.props.onBorderViolation();
+		}
 			
 		//build the HTML table
 		let rows = [];

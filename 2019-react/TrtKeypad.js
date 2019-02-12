@@ -64,36 +64,35 @@ class TrtKeypad extends React.Component {
 	  for (var i = 0; i < 14; i++){
 		  shape_options.push(<option value={i}>{i}</option>);
 	  }
+	  
+	  let color_options = [];
+	  for (var i = 0; i < 10; i++){
+		  color_options.push(<option value={i}>{i}</option>);
+	  }
+	  
+	  let angle_options = [];
+	  for (var i = 0; i < 4; i++){
+		  angle_options.push(<option value={i}>{i}</option>);
+	  }
+	  
 	  return(
 		<div id='trt-keypad'>
 			<ul>
 				<li>Shape  
 					 <select id="ShapeSelector" name="Shapes">
-					 {shape_options}
+						{shape_options}
 					</select> 
 				</li>
 				
 				<li>Angle  
 					 <select id="AngleSelector" name="Angles">
-						<option value="0">0</option>
-						<option value="1">1</option>						
-						<option value="2">2</option>						
-						<option value="3">3</option>						
+						{angle_options}
 					</select> 
 				</li>
 				
 				<li>Color  
 					 <select id="ColorSelector" name="Colors">
-						<option value="0">0</option>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
+						{color_options}
 					</select> 
 				</li>
 				
