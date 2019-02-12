@@ -399,12 +399,19 @@ function TRT_fnRotate( Direction )
 
 
 //*************************************************************
-//
+// try to perform a single step ( left, right, bottom). Return
+// value: 
+//			0: step was not performed because of collision or 
+//				boundary condition
+//			1: step was performed
 //*************************************************************
 function TRT_fnStep( dx, dy )
 {  
+  // erase the shape from the board by painting it with the 
+  // background color
   fnPaintShape( g_cNoColor );
   
+  // check the proposed new pixels for collisions. 
   for ( var i = 0; i < g_aShapeTable[g_iShapeIndex][g_iAngle].length; i+=2 )
   {
     var ix = g_ix + g_aShapeTable[g_iShapeIndex][g_iAngle][i] + dx;
@@ -412,17 +419,21 @@ function TRT_fnStep( dx, dy )
     
     if ( fnGetPixel( ix, iy ) != g_cNoColor )
     {
+	   // collision was found - restore the shape where it was and 
+	   // return zero
        fnPaintShape( g_cShapeColor );
        return(0);
     }
   }
 
+  // no collisions. update the shape coordinates and paint with 
+  // the "visible"
   g_ix += dx;
-  g_iy += dy;
-  
+  g_iy += dy;  
   fnPaintShape( g_cShapeColor );
   
-  return(1); //step performed ...
+  // return 1 to indicate the step was performed
+  return(1); 
 }
 
 

@@ -14,13 +14,15 @@ class TrtGame extends React.Component {
 		};
 	}
 	
-	handleHorizontalStep = (event) => {	  
+	handleStep = (event) => {	  
 		console.log('TrtGame.handleHorizontalStep: {'
 				+ ' dx:' + event.dx
+				+ ' dy:' + event.dy
 			+ ' }');
 			
 		let newShapePosition = JSON.parse(JSON.stringify(this.state.shapePosition));
 		newShapePosition.x+=event.dx;
+		newShapePosition.y+=event.dy;
 		this.setState({shapePosition: newShapePosition});
 	}
 	
@@ -57,7 +59,7 @@ class TrtGame extends React.Component {
 				shapePosition={this.state.shapePosition}
 			/>
 			<TrtKeypad
-				onHorizontalStep={this.handleHorizontalStep}
+				onStep={this.handleStep}
 			/>
 		  </div>
 		);	 

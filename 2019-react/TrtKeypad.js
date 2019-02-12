@@ -15,24 +15,28 @@ class TrtKeypad extends React.Component {
 	}
 	
 	handleStepLeft() {
-		const eventProps = { 'dx': -1 };
-		this.props.onHorizontalStep(eventProps);
+		const eventProps = { 'dx': -1, 'dy': 0 };
+		this.props.onStep(eventProps);
 	}
 	
 	handleStepRight() {
-		const eventProps = { 'dx': 1 };
-		this.props.onHorizontalStep(eventProps);
+		const eventProps = { 'dx': 1, 'dy': 0 };
+		this.props.onStep(eventProps);
 	}
 	
 	handleKeyDown(event){
 		switch(event.keyCode) {
 			case 40:
 				console.log('drop');
+				const eventProps = { 'dx': 0, 'dy': 1 };
+				this.props.onStep(eventProps);
 				break;
 			case 39:
+				console.log('tight');
 				this.handleStepRight();
 				break;
 			case 37:
+				console.log('left');
 				this.handleStepLeft();
 				break;
 			case 38:
