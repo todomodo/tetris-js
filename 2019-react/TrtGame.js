@@ -8,16 +8,16 @@ class TrtGame extends React.Component {
 	constructor(props) {
 		super(props);	
 		this.state = {
-		  shapeStyle: {index:0, color:1, angle:1},
+		  shapeStyle: {index:0, color:0, angle:0},
 		  boardDimentions: {width:6, height:10},
 		  shapePosition: {x:3, y:3}
 		};
 	}
 	
 	handleStep = (event) => {	  
-		console.log('TrtGame.handleHorizontalStep: {'
+		console.log('TrtGame.handleStep: {'
 				+ ' dx:' + event.dx
-				+ ' dy:' + event.dy
+				+ ', dy:' + event.dy
 			+ ' }');
 			
 		let newShapePosition = JSON.parse(JSON.stringify(this.state.shapePosition));
@@ -43,7 +43,7 @@ class TrtGame extends React.Component {
 				this.setState({shapeStyle: newShapeStyle});
 				break;				
 			default:
-				console.warn('unhandled event from' +  targetId);
+				console.warn('unhandled event from ' +  targetId);
 		} 
 	}
 

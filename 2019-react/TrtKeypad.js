@@ -29,7 +29,7 @@ class TrtKeypad extends React.Component {
 			case 40:
 				console.log('drop');
 				const eventProps = { 'dx': 0, 'dy': 1 };
-				this.props.onStep(eventProps);
+				//this.props.onStep(eventProps);
 				break;
 			case 39:
 				console.log('tight');
@@ -60,13 +60,16 @@ class TrtKeypad extends React.Component {
 
   
 	render() { 
+	  let shape_options = [];
+	  for (var i = 0; i < 14; i++){
+		  shape_options.push(<option value={i}>{i}</option>);
+	  }
 	  return(
 		<div id='trt-keypad'>
 			<ul>
 				<li>Shape  
 					 <select id="ShapeSelector" name="Shapes">
-						<option value="0">0</option>
-						<option value="1">1</option>						
+					 {shape_options}
 					</select> 
 				</li>
 				
