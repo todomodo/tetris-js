@@ -12,7 +12,7 @@ class TrtTitle extends React.Component {
 	render() { 
 	  return(
 		<div class='announcement'>
-			<p>Under development! (react v{React.version})</p>
+			<p>Under development; React {React.version}; Babel {Babel.version}</p>
 		</div>)
 	}
 }

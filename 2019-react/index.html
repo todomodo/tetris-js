@@ -15,7 +15,14 @@
 	<!-- downloaded from https://unpkg.com/babel-standalone@6.26.0/ -->
 	<script src="babel.min.js" type="text/javascript"> </script>	
 	
-	<!-- Tetris Implementation -->
+	<!-- 
+		Declare global exports variable to avoid "ReferenceError: exports is not defined" 
+		message later on
+	-->	
+	<script> var exports = {}; </script>
+	
+	<!-- Tetris Implementation -->		
+	<script src="TrtShapePointer.js" type="text/jsx" > </script>
 	<script src="TrtBoard.js" type="text/jsx" > </script>
 	<script src="TrtKeypad.js" type="text/jsx" > </script>
 	<script src="TrtTitle.js" type="text/jsx" > </script>

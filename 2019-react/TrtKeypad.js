@@ -8,27 +8,38 @@
 class TrtKeypad extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {			
+			shape: props.shape			
+		};
 				
 		this.handleStepLeft = this.handleStepLeft.bind(this);
 		this.handleStepRight = this.handleStepRight.bind(this);	
 		this.handleKeyDown = this.handleKeyDown.bind(this);			
 	}
 	
+	componentDidMount(){
+		document.addEventListener("keydown", this.handleKeyDown, false);
+	}
+
+	componentWillUnmount(){
+		document.removeEventListener("keydown", this.handleKeyDown, false);
+	}
+	
 	handleStepLeft() {
 		const eventProps = { 'dx': -1, 'dy': 0 };
-		this.props.onShapePositionChange(eventProps);
+		this.props.onShapeMotion(eventProps);
 	}
 	
 	handleStepRight() {
 		const eventProps = { 'dx': 1, 'dy': 0 };
-		this.props.onShapePositionChange(eventProps);
+		this.props.onShapeMotion(eventProps);
 	}
 	
 	handleKeyDown(event){
 		switch(event.keyCode) {
 			case 40:
 				//console.log('drop');
-				this.props.onShapePositionChange({ 'dx': 0, 'dy': 1 });
+				this.props.onShapeMotion({ 'dx': 0, 'dy': 1 });
 				break;
 			case 39:
 				//console.log('right');
@@ -40,7 +51,7 @@ class TrtKeypad extends React.Component {
 				break;
 			case 38:
 				//console.log('rotate');
-				this.props.onShapePositionChange({ 'dx': 0, 'dy': -1 });
+				this.props.onShapeMotion({ 'dx': 0, 'dy': -1 });
 				break;
 			case 32:
 				//console.log('restart');
@@ -50,19 +61,35 @@ class TrtKeypad extends React.Component {
 		} 
 	}
 	
-	componentDidMount(){
-		document.addEventListener("keydown", this.handleKeyDown, false);
+	handleSelectionChange = (event) => {	  
+		var targetId = event.target.getAttribute('id');
+		var newShape = new TrtShapePointer(this.state.shape);
+		switch(targetId) {
+			case "ShapeSelector":
+				newShape.index = event.target.value;				
+				break;
+			case "ColorSelector":
+				newShape.color = event.target.value;				
+				break;
+			case "AngleSelector":
+				newShape.angle = event.target.value;
+				break;				
+			default:
+				console.warn('unhandled event from ' +  targetId);
+		}
+		if (!this.state.shape.equals(newShape)) {
+			this.setState({shape: newShape});
+			const eventProps = {'shape': newShape};
+			this.props.onShapeSelection(eventProps);
+		}
 	}
-
-	componentWillUnmount(){
-		document.removeEventListener("keydown", this.handleKeyDown, false);
-	}
-
-  
+	
+	
+	
 	render() { 
 	  let shape_options = [];
 	  for (var i = 0; i < 14; i++){
-		  if (this.props.currentShapeStyle.index==i) {
+		  if (this.state.shape.index==i) {
 			  shape_options.push(<option value={i} selected>{i}</option>);
 		  } else {
 			  shape_options.push(<option value={i}>{i}</option>);
@@ -71,7 +98,7 @@ class TrtKeypad extends React.Component {
 	  
 	  let color_options = [];
 	  for (var i = 0; i < 10; i++){
-		  if (this.props.currentShapeStyle.color==i) {
+		  if (this.state.shape.color==i) {
 			  color_options.push(<option value={i} selected>{i}</option>);			  
 		  } else {
 			  color_options.push(<option value={i}>{i}</option>);
@@ -80,7 +107,7 @@ class TrtKeypad extends React.Component {
 	  
 	  let angle_options = [];
 	  for (var i = 0; i < 4; i++){
-		  if (this.props.currentShapeStyle.angle==i) {
+		  if (this.state.shape.angle==i) {
 			  angle_options.push(<option value={i}>{i}</option>);
 		  } else {
 			  angle_options.push(<option value={i}>{i}</option>);
@@ -88,7 +115,7 @@ class TrtKeypad extends React.Component {
 	  }
 	  
 	  return(
-		<div id='trt-keypad'>
+		<div id='trt-keypad' onChange={this.handleSelectionChange}>
 			<ul>
 				<li>Shape  
 					 <select id="ShapeSelector" name="Shapes">
