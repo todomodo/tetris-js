@@ -149,7 +149,7 @@ class TrtBoard extends React.Component {
 					<tbody>
 						{rows}
 					</tbody>
-				</table>
+				</table>				
 			</div>
 			)
 	}

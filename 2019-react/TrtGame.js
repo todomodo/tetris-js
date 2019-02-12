@@ -8,7 +8,7 @@ class TrtGame extends React.Component {
 	constructor(props) {
 		super(props);	
 		this.state = {
-		  shapeStyle: {index:0, color:0, angle:0},
+		  shapeStyle: {index:0, color:1, angle:1},
 		  boardDimentions: {width:6, height:10},
 		  shapePosition: {x:3, y:3}
 		};
@@ -50,6 +50,7 @@ class TrtGame extends React.Component {
 	  const numCol=8;
 		return(
 		  <div onChange={this.handleKeypadChange}>
+			<TrtTitle/>
 			<TrtBoard 
 				boardDimentions={this.state.boardDimentions} 
 				shapeStyle={this.state.shapeStyle}
