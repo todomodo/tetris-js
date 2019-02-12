@@ -8,10 +8,10 @@ class TrtGame extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			boardDimentions: {width:6, height:10},
-			currentShape: new TrtShapePointer({index:0, color:1, angle:0, x:3, y:3}),
-			nextShape: new TrtShapePointer({index:0, color:1, angle:0, x:3, y:3}),			
+			canvas: new TrtCanvas({width:6, height:10}),
+			shape: new TrtShapePointer({index:0, color:1, angle:0, x:3, y:3})
 		};
+		this.state.canvas.replaceShape(this.state.shape, this.state.shape);
 	}
 	
 	/*
@@ -23,11 +23,13 @@ class TrtGame extends React.Component {
 				+ ' event:' + JSON.stringify(event)
 			+ ' }');
 			
-		var newShape = new TrtShapePointer(this.state.currentShape);
+		var newCanvas = new TrtCanvas(this.state.canvas);
+		var newShape = new TrtShapePointer(this.state.shape);
 		newShape.x+=event.dx;
-		newShape.y+=event.dy;
-		if (!this.state.nextShape.equals(newShape)) {
-			this.setState({nextShape: newShape});
+		newShape.y+=event.dy;		
+		if (newCanvas.replaceShape(this.state.shape, newShape)) {
+			this.setState({shape: newShape});
+			this.setState({canvas: newCanvas});
 		}
 	}
 	
@@ -40,34 +42,14 @@ class TrtGame extends React.Component {
 				+ ' event:' + JSON.stringify(event)
 			+ ' }');
 		
-		var newShape = new TrtShapePointer(this.state.currentShape);
+		var newCanvas = new TrtCanvas(this.state.canvas);
+		var newShape = new TrtShapePointer(this.state.shape);
 		newShape.index = event.shape.index;
 		newShape.color = event.shape.color;
 		newShape.angle = event.shape.angle;
-		if (!this.state.nextShape.equals(newShape)) {
-			this.setState({nextShape: newShape});
-		}
-	}
-	
-	/*
-		called by the board when next shape failed to render
-	*/
-	handleCanvasViolation = (event) => {	  
-		console.log('TrtGame.handleCanvasViolation: {'
-			+ ' event:' + JSON.stringify(event)
-			+ ' }');			
-	}
-	
-	/*
-		called by the board when next shape rendered successfully
-	*/
-	handleCanvasUpdate = (event) => {	  
-		console.log('TrtGame.handleCanvasUpdate: {'
-			+ ' event:' + JSON.stringify(event)
-			+ ' }');
-		
-		if (!this.state.currentShape.equals(event.shape)) {
-			this.setState({currentShape: event.shape});
+		if (newCanvas.replaceShape(this.state.shape, newShape)) {
+			this.setState({shape: newShape});
+			this.setState({canvas: newCanvas});
 		}
 	}
 	
@@ -77,14 +59,10 @@ class TrtGame extends React.Component {
 		  <div>
 			<TrtTitle/>
 			<TrtBoard 
-				boardDimentions={this.state.boardDimentions} 
-				currentShape={this.state.currentShape}				
-				nextShape={this.state.nextShape}
-				onCanvasViolation={this.handleCanvasViolation}
-				onCanvasUpdate={this.handleCanvasUpdate}
+				canvas={this.state.canvas} 
 			/>
 			<TrtKeypad
-				shape={this.state.currentShape}
+				shape={this.state.shape}
 				onShapeMotion={this.handleShapeMotion}
 				onShapeSelection={this.handleShapeSelection}
 			/>
