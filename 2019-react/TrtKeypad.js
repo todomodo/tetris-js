@@ -10,7 +10,8 @@ class TrtKeypad extends React.Component {
 		super(props);
 				
 		this.handleStepLeft = this.handleStepLeft.bind(this);
-		this.handleStepRight = this.handleStepRight.bind(this);		
+		this.handleStepRight = this.handleStepRight.bind(this);	
+		this.handleKeyDown = this.handleKeyDown.bind(this);			
 	}
 	
 	handleStepLeft() {
@@ -21,6 +22,36 @@ class TrtKeypad extends React.Component {
 	handleStepRight() {
 		const eventProps = { 'dx': 1 };
 		this.props.onHorizontalStep(eventProps);
+	}
+	
+	handleKeyDown(event){
+		switch(event.keyCode) {
+			case 40:
+				console.log('drop');
+				break;
+			case 39:
+				this.handleStepRight();
+				break;
+			case 37:
+				this.handleStepLeft();
+				break;
+			case 38:
+				console.log('rotate');
+				break;
+			case 32:
+				console.log('restart');
+				break;				
+			default:
+				console.warn('unhandled keycode ' +  event.keyCode);
+		} 
+	}
+	
+	componentDidMount(){
+		document.addEventListener("keydown", this.handleKeyDown, false);
+	}
+
+	componentWillUnmount(){
+		document.removeEventListener("keydown", this.handleKeyDown, false);
 	}
 
   
