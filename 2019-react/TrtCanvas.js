@@ -1,6 +1,6 @@
 /*
 	The canvas is an in-memory representation of the game board
-	It is made of "pixels" (aka squares) of different colours
+	It is made of "pixels" (aka squares) of different colors
 */
 'use strict';
 
@@ -187,6 +187,7 @@ export default class TrtCanvas {
 				&& (pixelPosition.y >=0)
 				&& (pixelPosition.x < this.width)
 				&& (pixelPosition.y < this.height)
+				&& (this.getPixel(pixelPosition) == COLOR_NULL);
 	}
 	
 	/*
@@ -227,5 +228,27 @@ export default class TrtCanvas {
 		// restore the original shape
 		this.printShape(originalShape);
 		return false;
+	}
+	
+	/*
+		Execute a drop motion, which is a series of downward replacements
+		Returns the final position of the doped shape
+	*/
+	dropShape(shape) {
+		// erase the original shape 
+		var tmpShape = new TrtShapePointer(shape);		
+		tmpShape.color = COLOR_NULL;
+		this.printShape(tmpShape);
+		
+		//move as far down as possible
+		while (this.isShapePrintable(tmpShape)) {
+			tmpShape.y+=1;
+		}
+				
+		// print the shape at it's new position
+		var newShape = new TrtShapePointer(shape);		
+		newShape.y = tmpShape.y-1;
+		this.printShape(newShape);
+		return newShape;
 	}
 }

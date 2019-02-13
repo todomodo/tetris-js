@@ -12,8 +12,6 @@ class TrtKeypad extends React.Component {
 			shape: props.shape			
 		};
 				
-		this.handleStepLeft = this.handleStepLeft.bind(this);
-		this.handleStepRight = this.handleStepRight.bind(this);	
 		this.handleKeyDown = this.handleKeyDown.bind(this);			
 	}
 	
@@ -24,17 +22,7 @@ class TrtKeypad extends React.Component {
 	componentWillUnmount(){
 		document.removeEventListener("keydown", this.handleKeyDown, false);
 	}
-	
-	handleStepLeft() {
-		const eventProps = { 'dx': -1, 'dy': 0 };
-		this.props.onShapeMotion(eventProps);
-	}
-	
-	handleStepRight() {
-		const eventProps = { 'dx': 1, 'dy': 0 };
-		this.props.onShapeMotion(eventProps);
-	}
-	
+		
 	handleKeyDown(event){
 		switch(event.keyCode) {
 			case 40:
@@ -43,11 +31,11 @@ class TrtKeypad extends React.Component {
 				break;
 			case 39:
 				//console.log('right');
-				this.handleStepRight();
+				this.props.onShapeMotion({ 'dx': 1, 'dy': 0 });
 				break;
 			case 37:
 				//console.log('left');
-				this.handleStepLeft();
+				this.props.onShapeMotion({ 'dx': -1, 'dy': 0 });
 				break;
 			case 38:
 				//console.log('rotate');
@@ -55,6 +43,7 @@ class TrtKeypad extends React.Component {
 				break;
 			case 32:
 				//console.log('restart');
+				this.props.onShapeDrop();
 				break;				
 			default:
 				// console.warn('unhandled keycode ' +  event.keyCode);
@@ -136,10 +125,10 @@ class TrtKeypad extends React.Component {
 				</li>
 				
 				<li>
-					<button onClick={this.handleStepLeft}>&lt;--</button>
+					User arrows to move
 				</li>
 				<li>
-					<button onClick={this.handleStepRight}>--&gt;</button>
+					Use 'space' to drop
 				</li>
 				 
 			</ul>
