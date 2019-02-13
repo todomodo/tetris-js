@@ -232,7 +232,8 @@ export default class TrtCanvas {
 	
 	/*
 		Execute a drop motion, which is a series of downward replacements
-		Returns the final position of the doped shape
+		Returns the final position of the dropped shape, or null if no
+		drop was possible
 	*/
 	dropShape(shape) {
 		// erase the original shape 
@@ -246,9 +247,47 @@ export default class TrtCanvas {
 		}
 				
 		// print the shape at it's new position
-		var newShape = new TrtShapePointer(shape);		
-		newShape.y = tmpShape.y-1;
-		this.printShape(newShape);
-		return newShape;
+		var droppedShape = new TrtShapePointer(shape);		
+		droppedShape.y = tmpShape.y-1;
+		this.printShape(droppedShape);
+		if (droppedShape.equals(shape)) {
+			return null;
+		}
+		return droppedShape;
 	}
+	
+	/*
+		introduce new random shape at the top of the canvas and return a
+		pointer to it. Return null if shape cannot be introduced within 
+		the first MAX_DEPTH lines
+	*/
+	introduceRandomShape() {		
+		const SHAPE_COUNT = 14;
+		const COLOR_COUNT = 9;
+		const ANGLE_COUNT = 4;
+		const MAX_DEPTH = 4;
+		
+		var introducedShape = new TrtShapePointer({
+			index: this.getRandomInt(SHAPE_COUNT), 
+			color: 1 + this.getRandomInt(COLOR_COUNT), 
+			angle: this.getRandomInt(ANGLE_COUNT), 
+			x: 2 + this.getRandomInt(this.width-4)});
+			
+		console.log('TrtCanvas.introduceRandomShape BEGIN {'+ JSON.stringify(introducedShape)+'}');
+									
+		for (var y=0; y<MAX_DEPTH; y++) {
+			introducedShape.y = y;
+			if (this.isShapePrintable(introducedShape)) {
+				console.log('TrtCanvas.introduceRandomShape END {'+ JSON.stringify(introducedShape)+'}');
+				this.printShape(introducedShape);
+				return introducedShape;
+			}			
+		}		
+		return null;
+	}
+	
+	getRandomInt(max) {
+		return Math.floor(Math.random() * Math.floor(max));
+	}
+
 }
