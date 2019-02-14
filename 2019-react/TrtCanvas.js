@@ -317,57 +317,51 @@ export default class TrtCanvas {
 	}
 	
 	/*
-		count the number of complete rows. A row is complete if there are 
-		no blank pixels in it 
+		row operations
 	*/
-	getCompleteRowsCount(){
-		let count=this.height;
-		for (var y = 0; y < this.height; y++){
-			for (var x = 0; x < this.width; x++) {	
-				if (this.isPixelBlank({x:x, y:y})) {					
-					count--;
-					break;
-				}
-			}
+	isCompleteRow(row){
+		for (var i=0; i < this.width; i++) { 			
+			if (this.isPixelBlank({x:i, y:row})) return false;
 		}
-		return count ;
+		return true;
 	}
-	
-	/*
-		copy only the blank pixels from srcRow to destRow. 
-	*/
-	copyBlankPixels(srcRow,destRow){
-		for (var i=0; i < this.width; i++) { 
-			if (this.isPixelBlank({x:i, y:srcRow})) {
-				this.printPixel({x: i, y:destRow}, COLOR_NULL);
-			}
+		
+	findCompleteRow(){
+		for (var row = 0; row < this.height; row++){
+			if (this.isCompleteRow(row)) return row;
 		}
+		return null;
 	}
-	
-	/*
-		copy all pixels from srcRow to destRow. 
-	*/
-	copyAllPixels(srcRow,destRow){
+		
+	copyRow(srcRow,destRow){
 		for (var i=0; i < this.width; i++) { 			
 			this.printPixel({x: i, y:destRow}, this.getPixel({x: i, y:srcRow}));
 		}
+	}
+	
+	clearRow(row){
+		for (var i=0; i < this.width; i++) { 			
+			this.printPixel({x: i, y:row}, COLOR_NULL);
+		}
+	}
+	
+	spliceRow(row){
+		for (var i=row; i > 0; i--) { 			
+			this.copyRow(i-1,i);
+		}
+		this.clearRow(0);
 	}
 	
 	/*
 		compact the canvas
 	*/
 	compact(){
-		let completeRows = this.getCompleteRowsCount();
-		for (var i=0; i < completeRows; i++) { 			
-			for (var srcRow=1; srcRow < this.height; srcRow++) { 			
-				this.copyBlankPixels(srcRow, srcRow-1);
-			}
+		let row = this.findCompleteRow();
+		while (row!=null) {
+			this.spliceRow(row);
+			row = this.findCompleteRow();
 		}
-		for (var i=0; i < completeRows; i++) { 			
-			for (var srcRow=0; srcRow < this.height-1; srcRow++) { 			
-				this.copyAllPixels(srcRow, srcRow+1);
-			}
-		}
+		
 	}
 
 
