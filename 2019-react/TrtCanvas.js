@@ -121,10 +121,9 @@ const SHAPES = [
 	
 ] 
 
-/*
-	The color of the canvas itself. useful for erasing objects
-*/
-const COLOR_NULL = 0;
+
+const COLOR_NULL = 0;	// The color of the canvas itself. useful for erasing objects
+const COLOR_ERROR = 1;	// The color of an object in error state
 	   
 export default class TrtCanvas {			
 	constructor(props) {
@@ -147,13 +146,22 @@ export default class TrtCanvas {
 				}
 			}	
 		}
+		
+		/*
+			bind the pixel checkers so they can be passed as parameters
+			to other functions
+		*/		
+		this.isPixelInsideCanvas = this.isPixelInsideCanvas.bind(this);
+		this.isPixelBlank = this.isPixelBlank.bind(this);
 	}	
 	
 	/*
 		print one "pixel" on the canvas
 	*/
 	printPixel(pixelPosition,colorIndex) {	
-		this.pixels[pixelPosition.y][pixelPosition.x] = colorIndex;		
+		if (this.isPixelInsideCanvas(pixelPosition)) {
+			this.pixels[pixelPosition.y][pixelPosition.x] = colorIndex;
+		}
 	}
 	
 	/*
@@ -180,20 +188,28 @@ export default class TrtCanvas {
 	}
 	
 	/*
-		true pixel can be used for printing
+		true if pixel is inside canvas. Used in combination with
+		checkShape
 	*/
-	isPixelPrintable(pixelPosition) {	
+	isPixelInsideCanvas(pixelPosition) {	
 		return (pixelPosition.x >=0) 
 				&& (pixelPosition.y >=0)
 				&& (pixelPosition.x < this.width)
-				&& (pixelPosition.y < this.height)
-				&& (this.getPixel(pixelPosition) == COLOR_NULL);
+				&& (pixelPosition.y < this.height);
 	}
 	
 	/*
-		true if shape can be printed at its current locations
+		true pixel is within canvas and it's color is blank
 	*/
-	isShapePrintable(shape) {
+	isPixelBlank(pixelPosition) {	
+		return this.isPixelInsideCanvas(pixelPosition) 
+			   && (this.getPixel(pixelPosition) == COLOR_NULL);
+	}
+	
+	/*
+		true if all shape pixels pass certain condition 
+	*/
+	checkShape(shape,pixelChecker) {
 		let shapePixels = SHAPES[shape.index][shape.angle];
 		for (var i = 0; i < shapePixels.length; i++ )
 		{			
@@ -201,7 +217,7 @@ export default class TrtCanvas {
 				'x': shape.x + shapePixels[i].dx, 
 				'y': shape.y + shapePixels[i].dy };
 			
-			if (!this.isPixelPrintable(pixelPosition)) {						
+			if (!pixelChecker(pixelPosition)) {						
 				return false;
 			}
 		}
@@ -219,8 +235,11 @@ export default class TrtCanvas {
 		noColor.color = COLOR_NULL;
 		this.printShape(noColor);
 				
-		// can the new shape be printed as desired?
-		if (this.isShapePrintable(newShape)) {		
+		/*
+			The new shape can be printed if all pixels it is about to
+			occupy are blank
+		*/
+		if (this.checkShape(newShape,this.isPixelBlank)) {		
 			this.printShape(newShape);
 			return true;
 		}
@@ -242,11 +261,11 @@ export default class TrtCanvas {
 		this.printShape(tmpShape);
 		
 		//move as far down as possible
-		while (this.isShapePrintable(tmpShape)) {
+		while (this.checkShape(tmpShape,this.isPixelBlank)) {
 			tmpShape.y+=1;
 		}
 				
-		// print the shape at it's new position
+		// print the shape at it's final position
 		var droppedShape = new TrtShapePointer(shape);		
 		droppedShape.y = tmpShape.y-1;
 		this.printShape(droppedShape);
@@ -258,32 +277,33 @@ export default class TrtCanvas {
 	
 	/*
 		introduce new random shape at the top of the canvas and return a
-		pointer to it. Return null if shape cannot be introduced within 
-		the first MAX_DEPTH lines
+		pointer to it. Also return whether the game is over
 	*/
 	introduceRandomShape() {		
 		const SHAPE_COUNT = 14;
 		const COLOR_COUNT = 9;
 		const ANGLE_COUNT = 4;
-		const MAX_DEPTH = 4;
 		
+		//generate a random shape
 		var introducedShape = new TrtShapePointer({
 			index: this.getRandomInt(SHAPE_COUNT), 
-			color: 1 + this.getRandomInt(COLOR_COUNT), 
+			color: 2 + this.getRandomInt(COLOR_COUNT), 
 			angle: this.getRandomInt(ANGLE_COUNT), 
-			x: 2 + this.getRandomInt(this.width-4)});
+			x: 2 + this.getRandomInt(this.width-4),
+			y: 0});
+		console.log('TrtCanvas.introduceRandomShape '+ JSON.stringify(introducedShape));									
 			
-		console.log('TrtCanvas.introduceRandomShape BEGIN {'+ JSON.stringify(introducedShape)+'}');
-									
-		for (var y=0; y<MAX_DEPTH; y++) {
-			introducedShape.y = y;
-			if (this.isShapePrintable(introducedShape)) {
-				console.log('TrtCanvas.introduceRandomShape END {'+ JSON.stringify(introducedShape)+'}');
-				this.printShape(introducedShape);
-				return introducedShape;
-			}			
-		}		
-		return null;
+		//find the y coordinate		
+		while (!this.checkShape(introducedShape,this.isPixelInsideCanvas)) {
+			introducedShape.y+=1;			
+		}
+		
+		//check for game over
+		if (this.checkShape(introducedShape,this.isPixelBlank)) {
+			this.printShape(introducedShape);
+			return {shape: introducedShape, gameOver: false};
+		}
+		return {shape: introducedShape, gameOver: true};		
 	}
 	
 	getRandomInt(max) {

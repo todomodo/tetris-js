@@ -12,7 +12,7 @@ class TrtKeypad extends React.Component {
 			shape: props.shape			
 		};
 				
-		this.handleKeyDown = this.handleKeyDown.bind(this);			
+		this.handleKeyDown = this.handleKeyDown.bind(this);
 	}
 	
 	componentDidMount(){

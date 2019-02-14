@@ -9,9 +9,12 @@ class TrtGame extends React.Component {
 		super(props);
 		this.state = {			
 			canvas: new TrtCanvas({width:6, height:10}),
-			shape: null
+			shape: null,
+			gameOver: false
 		};		
-		this.state.shape = this.state.canvas.introduceRandomShape();
+		let result = this.state.canvas.introduceRandomShape();
+		this.state.shape = result.shape;
+		this.state.gameOver = result.gameOver;
 	}
 	
 	/*
@@ -19,8 +22,8 @@ class TrtGame extends React.Component {
 		coordinates
 	*/
 	handleShapeMotion = (event) => {	  			
-		if (this.state.shape==null) {
-			console.log('TrtGame.handleShapeMotion: game over !');
+		if (this.state.gameOver) {
+			console.log('TrtGame.handleShapeDrop: game over, no place for ' + JSON.stringify(this.state.shape));
 		} else {
 			var newCanvas = new TrtCanvas(this.state.canvas);
 			var newShape = new TrtShapePointer(this.state.shape);
@@ -43,22 +46,22 @@ class TrtGame extends React.Component {
 		called by the keypad to request shape drop
 	*/
 	handleShapeDrop = (event) => {
-		if (this.state.shape==null) {
-			console.log('TrtGame.handleShapeDrop: game over !');
+		if (this.state.gameOver) {
+			console.log('TrtGame.handleShapeDrop: game over, no place for ' + JSON.stringify(this.state.shape));
 		} else {
 			// drop the current shape
 			let newCanvas = new TrtCanvas(this.state.canvas);
 			newCanvas.dropShape(this.state.shape);		
 						
 			// try to put a brand new shape on the board
-			let newShape =  newCanvas.introduceRandomShape();			
-			this.setState({shape: newShape});
-			this.setState({canvas: newCanvas});
+			let result =  newCanvas.introduceRandomShape();			
+			if (result.gameOver) { 			
+				this.setState({gameOver: true});				
+				console.log('TrtGame.handleShapeDrop: game over, no place for ' + JSON.stringify(result.shape));
+			}			
+			this.setState({shape: result.shape});
+			this.setState({canvas: newCanvas});	
 			
-			//check for game over
-			if (this.state.shape==null) {
-				console.log('TrtGame.handleShapeDrop: game over!');
-			}
 		}
 	}
 	
