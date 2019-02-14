@@ -184,7 +184,10 @@ export default class TrtCanvas {
 		read one "pixel" from the canvas
 	*/
 	getPixel(pixelPosition) {	
-		return this.pixels[pixelPosition.y][pixelPosition.x];
+		if (this.isPixelInsideCanvas(pixelPosition)) {
+			return this.pixels[pixelPosition.y][pixelPosition.x];
+		}
+		return COLOR_NULL;
 	}
 	
 	/*
@@ -306,8 +309,66 @@ export default class TrtCanvas {
 		return {shape: introducedShape, gameOver: true};		
 	}
 	
+	/*
+		get random int between 0 and max (exclusive)
+	*/
 	getRandomInt(max) {
 		return Math.floor(Math.random() * Math.floor(max));
 	}
+	
+	/*
+		count the number of complete rows. A row is complete if there are 
+		no blank pixels in it 
+	*/
+	getCompleteRowsCount(){
+		let count=this.height;
+		for (var y = 0; y < this.height; y++){
+			for (var x = 0; x < this.width; x++) {	
+				if (this.isPixelBlank({x:x, y:y})) {					
+					count--;
+					break;
+				}
+			}
+		}
+		return count ;
+	}
+	
+	/*
+		copy only the blank pixels from srcRow to destRow. 
+	*/
+	copyBlankPixels(srcRow,destRow){
+		for (var i=0; i < this.width; i++) { 
+			if (this.isPixelBlank({x:i, y:srcRow})) {
+				this.printPixel({x: i, y:destRow}, COLOR_NULL);
+			}
+		}
+	}
+	
+	/*
+		copy all pixels from srcRow to destRow. 
+	*/
+	copyAllPixels(srcRow,destRow){
+		for (var i=0; i < this.width; i++) { 			
+			this.printPixel({x: i, y:destRow}, this.getPixel({x: i, y:srcRow}));
+		}
+	}
+	
+	/*
+		compact the canvas
+	*/
+	compact(){
+		let completeRows = this.getCompleteRowsCount();
+		for (var i=0; i < completeRows; i++) { 			
+			for (var srcRow=1; srcRow < this.height; srcRow++) { 			
+				this.copyBlankPixels(srcRow, srcRow-1);
+			}
+		}
+		for (var i=0; i < completeRows; i++) { 			
+			for (var srcRow=0; srcRow < this.height-1; srcRow++) { 			
+				this.copyAllPixels(srcRow, srcRow+1);
+			}
+		}
+	}
+
 
 }

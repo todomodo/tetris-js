@@ -13,6 +13,8 @@ class TrtKeypad extends React.Component {
 		};
 				
 		this.handleKeyDown = this.handleKeyDown.bind(this);
+		this.handleSetCanvas = this.handleSetCanvas.bind(this);
+		this.handleCompactCanvas = this.handleCompactCanvas.bind(this);
 	}
 	
 	componentDidMount(){
@@ -48,8 +50,18 @@ class TrtKeypad extends React.Component {
 				// console.warn('unhandled keycode ' +  event.keyCode);
 		} 
 	}
-
 	
+	handleSetCanvas(event){
+		//let jsonTxt = '{"width":6,"height":10,"pixels":[[0,0,8,0,0,0],[0,0,8,8,8,0],[0,0,0,2,2,0],[0,0,0,0,2,2],[0,0,6,6,6,6],[0,0,0,0,0,7],[0,0,0,7,7,7],[0,0,0,0,10,7],[2,0,10,10,10,3],[2,2,0,0,3,3]]}';
+
+		let jsonTxt = '{"width":6,"height":10,"pixels":[[0,0,7,7,0,0],[0,0,0,7,0,0],[0,0,0,7,0,0],[0,0,0,0,0,0],[0,0,3,3,0,0],[2,2,3,3,8,0],[2,2,8,0,8,0],[0,8,8,8,8,8],[9,9,8,7,7,7],[9,9,0,0,7,0]]}';
+		this.props.onSetCanvas(JSON.parse(jsonTxt));
+	}
+	
+	handleCompactCanvas(event){
+		this.props.onCompactCanvas();
+	}
+
 	
 	render() { 
 	  
@@ -57,8 +69,14 @@ class TrtKeypad extends React.Component {
 		<div id='trt-keypad'>
 			<ul>				
 				<li>
-					User arrows to move
-				</li>								 
+					Use arrows to rotate, move or drop
+				</li>
+				<li>
+					<button onClick={this.handleSetCanvas}>Set Canvas</button>
+				</li>
+				<li>
+					<button onClick={this.handleCompactCanvas}>Compact Canvas</button>
+				</li>
 			</ul>
 		</div>)
 	}

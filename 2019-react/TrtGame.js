@@ -15,6 +15,8 @@ class TrtGame extends React.Component {
 		let result = this.state.canvas.introduceRandomShape();
 		this.state.shape = result.shape;
 		this.state.gameOver = result.gameOver;
+		
+		this.handleCompactCanvas = this.handleCompactCanvas.bind(this);
 	}
 	
 	/*
@@ -62,8 +64,28 @@ class TrtGame extends React.Component {
 			this.setState({shape: result.shape});
 			this.setState({canvas: newCanvas});	
 			
+			
+			console.log('TrtGame.handleShapeDrop: CANVAS ' + JSON.stringify(this.state.canvas));
+			
 		}
 	}
+	
+	/*
+		called by the keypad to set the canvas to a certain state
+	*/
+	handleSetCanvas = (event) => {
+		console.log('TrtGame.handleSetCanvas: ' + JSON.stringify(event));	
+		var newCanvas = new TrtCanvas(event);		
+		this.setState({canvas: newCanvas});	
+	}
+	
+	handleCompactCanvas(){
+		console.log('TrtGame.handleCompactCanvas');	
+		var newCanvas = new TrtCanvas(this.state.canvas);
+		newCanvas.compact();
+		this.setState({canvas: newCanvas});	
+	}
+	
 	
 	render() {
 		return(
@@ -75,7 +97,9 @@ class TrtGame extends React.Component {
 			<TrtKeypad
 				shape={this.state.shape}
 				onShapeMotion={this.handleShapeMotion}
-				onShapeDrop={this.handleShapeDrop}				
+				onShapeDrop={this.handleShapeDrop}
+				onSetCanvas={this.handleSetCanvas}
+				onCompactCanvas={this.handleCompactCanvas}
 			/>
 		  </div>
 		);	 
