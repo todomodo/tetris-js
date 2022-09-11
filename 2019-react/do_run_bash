@@ -1,10 +1,11 @@
 #!/bin/bash
 #
-# Run container in anonymous bash mode:
+# Run container in anonymous bash mode. Use this when troubleshooting
+# container issues.
 #
 #   * the container is nameless
-#   * there is no web server
+#   * there is no npm/web server
 #   * exposed ports are not mapped
 #   * the app folder is directly mounted
-
+#
 docker run -it --rm -v $PWD/app:/root/app tetjs-rapidant bash

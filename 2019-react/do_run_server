@@ -1,6 +1,12 @@
 #!/bin/bash
-# Start container in default (server) with app dir mounted
-# directly to host
+$
+# Run container in named server mode. Use this whne developing
+# in REACT
+#
+#   * the container is named
+#   * the npm/web server is running in dev mode
+#   * exposed ports are mapped
+#   * the app folder is directly mounted
 #
 CONTAINER_NAME=tetjs
 APP_ROOT=$PWD/app
