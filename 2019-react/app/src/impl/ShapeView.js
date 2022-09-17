@@ -1,11 +1,11 @@
 /*
-	Renders the grid on screen
+	Renders the board on screen
 */
-import './ShapePreview.css';
+import './ShapeView.css';
 import React from 'react';
 import Config from "./Config";
 
-export default class ShapePreview extends React.Component {
+export default class ShapeView extends React.Component {
     constructor(props) {
         super(props);
         this.config = new Config();
@@ -13,8 +13,8 @@ export default class ShapePreview extends React.Component {
 
     render() {
         return (
-            <div className='ShapePreview'>
-                Shape Preview
+            <div className='ShapeView'>
+                Shape View
             </div>
         )
     }

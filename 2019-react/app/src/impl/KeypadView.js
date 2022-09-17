@@ -3,10 +3,10 @@
 	able to play a game with it, but can use it to display different shapes
 	and move them around
 */
-import './Controller.css';
+import './KeypadView.css';
 import React from 'react';
 
-export default class Controller extends React.Component {
+export default class KeypadView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,8 +14,8 @@ export default class Controller extends React.Component {
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        this.handleSetGrid = this.handleSetGrid.bind(this);
-        this.handleCompactGrid = this.handleCompactGrid.bind(this);
+        this.handleSetBoard = this.handleSetBoard.bind(this);
+        this.handleCompactBoard = this.handleCompactBoard.bind(this);
     }
 
     componentDidMount() {
@@ -56,31 +56,32 @@ export default class Controller extends React.Component {
         }
     }
 
-    handleSetGrid(event) {
+    handleSetBoard(event) {
         //let jsonTxt = '{"width":6,"height":10,"pixels":[[0,0,8,0,0,0],[0,0,8,8,8,0],[0,0,0,2,2,0],[0,0,0,0,2,2],[0,0,6,6,6,6],[0,0,0,0,0,7],[0,0,0,7,7,7],[0,0,0,0,10,7],[2,0,10,10,10,3],[2,2,0,0,3,3]]}';
 
         let jsonTxt = '{"width":6,"height":10,"pixels":[[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,3,3,0,0],[2,2,3,3,8,0],[2,2,8,0,8,0],[0,8,8,8,8,8],[9,9,8,7,7,7],[9,9,0,0,7,0]]}';
-        this.props.onDbgSetGrid(JSON.parse(jsonTxt));
+        this.props.onDbgSetBoard(JSON.parse(jsonTxt));
     }
 
-    handleCompactGrid(event) {
-        this.props.onDbgCompactGrid();
+    handleCompactBoard(event) {
+        this.props.onDbgCompactBoard();
     }
 
 
     render() {
 
         return (
-            <div className='Controller'>
+            <div className='KeypadView'>
+                <p>Keypad</p>
                 <ul>
                     <li>
                         Use arrows to rotate, move or drop
                     </li>
                     <li>
-                        <button onClick={this.handleSetGrid}>Set Grid</button>
+                        <button onClick={this.handleSetBoard}>Set Board</button>
                     </li>
                     <li>
-                        <button onClick={this.handleCompactGrid}>Compact Grid</button>
+                        <button onClick={this.handleCompactBoard}>Compact Board</button>
                     </li>
                 </ul>
             </div>)

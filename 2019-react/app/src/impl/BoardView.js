@@ -1,7 +1,7 @@
 /*
-	Renders the grid on screen
+	Renders the board on screen
 */
-import './GridPresenter.css';
+import './BoardView.css';
 import React from 'react';
 import Config from "./Config";
 
@@ -12,14 +12,14 @@ const CELL_STYLES = [
     'color-7', 'color-8', 'color-9'
 ];
 
-export default class GridPresenter extends React.Component {
+export default class BoardView extends React.Component {
     constructor(props) {
         super(props);
         this.config = new Config();
     }
 
     getCellStyle(cellPosition) {
-        let colorIndex = this.props.grid.getPixel(cellPosition);
+        let colorIndex = this.props.board.getPixel(cellPosition);
         return CELL_STYLES[colorIndex];
     }
 
@@ -39,7 +39,7 @@ export default class GridPresenter extends React.Component {
             rows.push(<tr key={"row_" + y}>{cells}</tr>)
         }
         return (
-            <div className='GridPresenter'>
+            <div className='BoardView'>
                 <table>
                     <tbody>
                     {rows}

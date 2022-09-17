@@ -1,27 +1,27 @@
 /*
 	The main game class
 */
-import './Game.css';
+import './GameView.css';
 import React from 'react';
 import Config from "./Config";
-import Header from './Header';
-import Grid from './Grid';
-import GridPresenter from './GridPresenter';
-import Controller from './Controller';
+import HeaderView from './HeaderView';
+import Board from './Board';
+import BoardView from './BoardView';
+import KeypadView from './KeypadView';
 import Shape from "./Shape";
-import ShapePreview from "./ShapePreview";
+import ShapeView from "./ShapeView";
 
-export default class Game extends React.Component {
+export default class GameView extends React.Component {
     constructor(props) {
         super(props);
         this.config = new Config();
         this.state = {
-            grid: new Grid({}),
+            board: new Board({}),
             shape: this.#buildNewShape(),
             gameOver: false
         };
 
-        this.handleDbgCompactGrid = this.handleDbgCompactGrid.bind(this);
+        this.handleDbgCompactBoard = this.handleDbgCompactBoard.bind(this);
         this.handleDbgClockTick = this.handleDbgClockTick.bind(this);
     }
 
@@ -34,7 +34,7 @@ export default class Game extends React.Component {
         } else if (this.state.shape.blocked) {
             console.log('Game.handleShapeMotion: blocked ' + JSON.stringify(this.state.shape));
         } else {
-            let newGrid = new Grid(this.state.grid);
+            let newBoard = new Board(this.state.board);
             let newShape = new Shape(this.state.shape);
             newShape.x += event.dx;
             newShape.y += event.dy;
@@ -43,9 +43,9 @@ export default class Game extends React.Component {
             if (newShape.angle > MAX_ANGLE) {
                 newShape.angle = 0;
             }
-            if (newGrid.moveShape(this.state.shape, newShape)) {
+            if (newBoard.moveShape(this.state.shape, newShape)) {
                 this.setState({shape: newShape});
-                this.setState({grid: newGrid});
+                this.setState({board: newBoard});
             }
         }
     }
@@ -60,10 +60,10 @@ export default class Game extends React.Component {
         } else if (this.state.shape.blocked) {
             console.log('Game.handleShapeDrop: blocked ' + JSON.stringify(this.state.shape));
         } else {
-            let newGrid = new Grid(this.state.grid);
-            let result = newGrid.dropShape(this.state.shape);
+            let newBoard = new Board(this.state.board);
+            let result = newBoard.dropShape(this.state.shape);
             result.newShape.blocked = result.blocked;
-            this.setState({grid: newGrid, shape: result.newShape});
+            this.setState({board: newBoard, shape: result.newShape});
             console.log('Game.handleShapeDrop: droped ' + JSON.stringify(result.newShape));
         }
     }
@@ -71,17 +71,17 @@ export default class Game extends React.Component {
     /*
         debug methods
     */
-    handleDbgSetGrid = (event) => {
-        console.log('Game.handleDbgSetGrid: ' + JSON.stringify(event));
-        var newGrid = new Grid(event);
-        this.setState({grid: newGrid});
+    handleDbgSetBoard = (event) => {
+        console.log('Game.handleDbgSetBoard: ' + JSON.stringify(event));
+        var newBoard = new Board(event);
+        this.setState({board: newBoard});
     }
 
-    handleDbgCompactGrid() {
-        console.log('Game.handleDbgCompactGrid');
-        let newGrid = new Grid(this.state.grid);
-        newGrid.compact();
-        this.setState({grid: newGrid});
+    handleDbgCompactBoard() {
+        console.log('Game.handleDbgCompactBoard');
+        let newBoard = new Board(this.state.board);
+        newBoard.compact();
+        this.setState({board: newBoard});
     }
 
     handleDbgClockTick() {
@@ -89,16 +89,16 @@ export default class Game extends React.Component {
             console.log('Game.handleDbgClockTick: game over');
         } else if (this.state.shape.blocked) {
             // abandon the old shape and introduce a new one
-            let newGrid = new Grid(this.state.grid);
-            let result = newGrid.introduceShape(this.#buildNewShape());
-            this.setState({grid: newGrid, shape: result.newShape});
+            let newBoard = new Board(this.state.board);
+            let result = newBoard.introduceShape(this.#buildNewShape());
+            this.setState({board: newBoard, shape: result.newShape});
             console.log('Game.handleDbgClockTick: introduced ' + JSON.stringify(this.state.shape));
         } else {
             // advance the current shape one step down
-            let newGrid = new Grid(this.state.grid);
-            let result = newGrid.advanceShape(this.state.shape, 1, this.config.finish_row + 1);
+            let newBoard = new Board(this.state.board);
+            let result = newBoard.advanceShape(this.state.shape, 1, this.config.finish_row + 1);
             result.newShape.blocked = result.blocked;
-            this.setState({grid: newGrid, shape: result.newShape});
+            this.setState({board: newBoard, shape: result.newShape});
             console.log('Game.handleDbgClockTick: advanced ' + JSON.stringify(this.state.shape));
         }
     }
@@ -128,20 +128,20 @@ export default class Game extends React.Component {
 
     render() {
         return (
-            <div className="Game">
-                <Header/>
-                <GridPresenter
-                    grid={this.state.grid}
+            <div className="GameView">
+                <HeaderView/>
+                <BoardView
+                    board={this.state.board}
                 />
-                <ShapePreview
+                <ShapeView
                     shape={this.state.shape}
                 />
-                <Controller
+                <KeypadView
                     shape={this.state.shape}
                     onShapeMotion={this.handleShapeMotion}
                     onShapeDrop={this.handleShapeDrop}
-                    onDbgSetGrid={this.handleDbgSetGrid}
-                    onDbgCompactGrid={this.handleDbgCompactGrid}
+                    onDbgSetBoard={this.handleDbgSetBoard}
+                    onDbgCompactBoard={this.handleDbgCompactBoard}
                     onDbgClockTick={this.handleDbgClockTick}
                 />
             </div>

@@ -1,7 +1,7 @@
-.Controller {
-    grid-row: 3;
+.ShapeView {
+    grid-row: 2;
     grid-column: 2;
-    border: 1px solid black;
+    border: 1px dotted gray;
     padding: 10px 10px 10px 0px;
     vertical-align: top;
 }

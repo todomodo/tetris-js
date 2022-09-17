@@ -1,16 +1,17 @@
-.GridPresenter {
+.BoardView {
     grid-row: 2 / 4;
     grid-column: 1;
-    border: 1px solid black;
+    border: 1px dotted gray;
     margin-left: 2%;
     margin-right: 2%;
 }
 
-.GridPresenter table {
+.BoardView table {
     margin: 0 auto;
+    border: 1px solid black;
 }
 
-.GridPresenter td {
+.BoardView td {
     line-height: 3px;
     vertical-align: middle;
     height: 23px;
@@ -19,47 +20,47 @@
     border: 3px groove gray;
 }
 
-.GridPresenter .color-null {
+.BoardView .color-null {
     background-color: white;
     border: 3px solid white;
 }
 
-.GridPresenter .color-0 {
+.BoardView .color-0 {
     background-color: #FFCCFF;
 }
 
-.GridPresenter .color-1 {
+.BoardView .color-1 {
     background-color: #FFCC00;
 }
 
-.GridPresenter .color-2 {
+.BoardView .color-2 {
     background-color: #FF99FF;
 }
 
-.GridPresenter .color-3 {
+.BoardView .color-3 {
     background-color: #00FFFF;
 }
 
-.GridPresenter .color-4 {
+.BoardView .color-4 {
     background-color: #66CC99;
 }
 
-.GridPresenter .color-5 {
+.BoardView .color-5 {
     background-color: #33FF33;
 }
 
-.GridPresenter .color-6 {
+.BoardView .color-6 {
     background-color: #CC33FF;
 }
 
-.GridPresenter .color-7 {
+.BoardView .color-7 {
     background-color: #66FFCC;
 }
 
-.GridPresenter .color-8 {
+.BoardView .color-8 {
     background-color: #669999;
 }
 
-.GridPresenter .color-9 {
+.BoardView .color-9 {
     background-color: #00FFCC;
 }

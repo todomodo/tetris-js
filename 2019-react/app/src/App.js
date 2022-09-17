@@ -1,12 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
-import Game from './impl/Game';
+import GameView from './impl/GameView';
 
 function App() {
     return (
         <div className="App">
 
-            <Game/>
+            <GameView/>
 
         </div>
     )

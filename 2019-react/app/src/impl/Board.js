@@ -1,14 +1,13 @@
 /*
-	The grid is an in-memory representation of the game
-	It is made of "pixels" (aka squares) of different colors
+	The board is made of cells (aka "pixels") of different colors
 */
 
 import Shape from "./Shape";
 import Config from "./Config";
 
-const COLOR_NULL = 0;	// The grid's background color. useful for erasing pixels
+const COLOR_NULL = 0;	// The board's background color. useful for erasing pixels
 
-export default class Grid {
+export default class Board {
     constructor(props) {
         this.config = new Config();
 
@@ -33,22 +32,22 @@ export default class Grid {
             bind the pixel checkers so they can be passed as parameters
             to other functions
         */
-        this.isPixelInsideGrid = this.isPixelInsideGrid.bind(this);
+        this.isPixelInsideBoard = this.isPixelInsideBoard.bind(this);
         this.isPixelBlank = this.isPixelBlank.bind(this);
         this.isPixelBeforeLine = this.isPixelBeforeLine.bind(this);
     }
 
     /*
-        print one "pixel" on the grid
+        print one "pixel" on the board
     */
     #printPixel(pixelPosition, colorIndex) {
-        if (this.isPixelInsideGrid(pixelPosition)) {
+        if (this.isPixelInsideBoard(pixelPosition)) {
             this.pixels[pixelPosition.y][pixelPosition.x] = colorIndex;
         }
     }
 
     /*
-        print shape on the grid
+        print shape on the board
     */
     printShape(shape) {
         let shapePixels = shape.getPixels();
@@ -64,20 +63,20 @@ export default class Grid {
 
 
     /*
-        read one "pixel" from the grid
+        read one "pixel" from the board
     */
     getPixel(pixelPosition) {
-        if (this.isPixelInsideGrid(pixelPosition)) {
+        if (this.isPixelInsideBoard(pixelPosition)) {
             return this.pixels[pixelPosition.y][pixelPosition.x];
         }
         return COLOR_NULL;
     }
 
     /*
-        true if pixel is inside grid. Used in combination with
+        true if pixel is inside board. Used in combination with
         checkShape
     */
-    isPixelInsideGrid(pixelPosition, checkerParams) {
+    isPixelInsideBoard(pixelPosition, checkerParams) {
         return (pixelPosition.x >= 0)
             && (pixelPosition.y >= 0)
             && (pixelPosition.x < this.config.width)
@@ -85,10 +84,10 @@ export default class Grid {
     }
 
     /*
-        true pixel is within the grid AND it's color is blank
+        true pixel is within the board AND it's color is blank
     */
     isPixelBlank(pixelPosition, checkerParams) {
-        return this.isPixelInsideGrid(pixelPosition)
+        return this.isPixelInsideBoard(pixelPosition)
             && (this.getPixel(pixelPosition) === COLOR_NULL);
     }
 
@@ -139,15 +138,15 @@ export default class Grid {
         Drop shape all the way down to finish line
     */
     dropShape(shape) {
-        console.log('Grid.dropShape ' + JSON.stringify(shape));
+        console.log('Board.dropShape ' + JSON.stringify(shape));
         return this.advanceShape(shape, this.config.height, this.config.finish_row + 1)
     }
 
     /*
-        introduce new shape at the top of the grid
+        introduce new shape at the top of the board
     */
     introduceShape(shape) {
-        console.log('Grid.introduceShape ' + JSON.stringify(shape));
+        console.log('Board.introduceShape ' + JSON.stringify(shape));
         return this.advanceShape(shape, this.config.height, this.config.start_row + 1)
     }
 
@@ -233,7 +232,7 @@ export default class Grid {
     }
 
     /*
-        compact the grid
+        compact the board
     */
     compact() {
         let row = this.#findCompleteRow();
