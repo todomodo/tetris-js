@@ -139,7 +139,7 @@ export default class Board {
     */
     dropShape(shape) {
         console.log('Board.dropShape ' + JSON.stringify(shape));
-        return this.advanceShape(shape, this.config.height, this.config.finish_row + 1)
+        return this.advanceShape(shape, this.config.height, this.config.finish_row)
     }
 
     /*
@@ -147,7 +147,10 @@ export default class Board {
     */
     introduceShape(shape) {
         console.log('Board.introduceShape ' + JSON.stringify(shape));
-        return this.advanceShape(shape, this.config.height, this.config.start_row + 1)
+        for (let row = 0; row < this.config.start_row; row++) {
+            this.#clearRow(row);
+        }
+        return this.advanceShape(shape, this.config.height, this.config.start_row)
     }
 
     /*

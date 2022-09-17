@@ -15,14 +15,16 @@ export default class GameView extends React.Component {
     constructor(props) {
         super(props);
         this.config = new Config();
+        let newBoard = new Board({});
+        let result = newBoard.introduceShape(this.#buildNewShape());
         this.state = {
-            board: new Board({}),
-            shape: this.#buildNewShape(),
+            board: newBoard,
+            shape: result.newShape,
             gameOver: false
         };
-
         this.handleDbgCompactBoard = this.handleDbgCompactBoard.bind(this);
         this.handleDbgClockTick = this.handleDbgClockTick.bind(this);
+
     }
 
     /*
@@ -44,8 +46,7 @@ export default class GameView extends React.Component {
                 newShape.angle = 0;
             }
             if (newBoard.moveShape(this.state.shape, newShape)) {
-                this.setState({shape: newShape});
-                this.setState({board: newBoard});
+                this.setState({board: newBoard, shape: newShape});
             }
         }
     }
@@ -96,7 +97,7 @@ export default class GameView extends React.Component {
         } else {
             // advance the current shape one step down
             let newBoard = new Board(this.state.board);
-            let result = newBoard.advanceShape(this.state.shape, 1, this.config.finish_row + 1);
+            let result = newBoard.advanceShape(this.state.shape, 1, this.config.finish_row);
             result.newShape.blocked = result.blocked;
             this.setState({board: newBoard, shape: result.newShape});
             console.log('Game.handleDbgClockTick: advanced ' + JSON.stringify(this.state.shape));
@@ -119,7 +120,7 @@ export default class GameView extends React.Component {
             index: this.#getRandomInt(SHAPE_COUNT),
             color: 2 + this.#getRandomInt(COLOR_COUNT), //the first two colors are invisible
             angle: this.#getRandomInt(ANGLE_COUNT),
-            x: this.config.width / 2,
+            x: (this.config.width / 2) - 1,
             y: 0,
             blocked: false
         });
