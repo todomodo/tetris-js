@@ -4,24 +4,23 @@
 */
 
 import Shape from "./Shape";
+import Config from "./Config";
 
 const COLOR_NULL = 0;	// The grid's background color. useful for erasing pixels
-const COLOR_ERROR = 1;	// The color of an object in error state
 
 export default class Grid {
     constructor(props) {
-        this.width = props.width;
-        this.height = props.height;
+        this.config = new Config();
 
         //init pixels to be a 2d array
         this.pixels = [];
-        for (var i = 0; i < props.height; i++) {
+        for (var i = 0; i < this.config.height; i++) {
             this.pixels[i] = [];
         }
 
         //copy the values from other object
-        for (var y = 0; y < props.height; y++) {
-            for (var x = 0; x < props.width; x++) {
+        for (var y = 0; y < this.config.height; y++) {
+            for (var x = 0; x < this.config.width; x++) {
                 if (typeof props.pixels == 'undefined') {
                     this.pixels[y][x] = COLOR_NULL;
                 } else {
@@ -80,8 +79,8 @@ export default class Grid {
     isPixelInsideGrid(pixelPosition) {
         return (pixelPosition.x >= 0)
             && (pixelPosition.y >= 0)
-            && (pixelPosition.x < this.width)
-            && (pixelPosition.y < this.height);
+            && (pixelPosition.x < this.config.width)
+            && (pixelPosition.y < this.config.height);
     }
 
     /*
@@ -189,7 +188,7 @@ export default class Grid {
             index: this.getRandomInt(SHAPE_COUNT),
             color: 2 + this.getRandomInt(COLOR_COUNT),
             angle: this.getRandomInt(ANGLE_COUNT),
-            x: 2 + this.getRandomInt(this.width - 4),
+            x: 2 + this.getRandomInt(this.config.width - 4),
             y: 0
         });
         console.log('Grid.introduceRandomShape ' + JSON.stringify(introducedShape));
@@ -218,27 +217,27 @@ export default class Grid {
         row operations
     */
     isCompleteRow(row) {
-        for (let i = 0; i < this.width; i++) {
+        for (let i = 0; i < this.config.width; i++) {
             if (this.isPixelBlank({x: i, y: row})) return false;
         }
         return true;
     }
 
     findCompleteRow() {
-        for (let row = 0; row < this.height; row++) {
+        for (let row = 0; row < this.config.height; row++) {
             if (this.isCompleteRow(row)) return row;
         }
         return null;
     }
 
     copyRow(srcRow, destRow) {
-        for (let i = 0; i < this.width; i++) {
+        for (let i = 0; i < this.config.width; i++) {
             this.printPixel({x: i, y: destRow}, this.getPixel({x: i, y: srcRow}));
         }
     }
 
     clearRow(row) {
-        for (let i = 0; i < this.width; i++) {
+        for (let i = 0; i < this.config.width; i++) {
             this.printPixel({x: i, y: row}, COLOR_NULL);
         }
     }

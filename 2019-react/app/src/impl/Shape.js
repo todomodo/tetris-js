@@ -119,7 +119,6 @@ const SHAPES = [
 
 export default class Shape {
 
-
     constructor(props) {
         this.index = props.index;
         this.color = props.color;

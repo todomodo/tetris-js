@@ -3,6 +3,7 @@
 */
 import './GridPresenter.css';
 import React from 'react';
+import Config from "./Config";
 
 const CELL_STYLES = [
     'color-null', 'color-error', 'color-0',
@@ -14,6 +15,7 @@ const CELL_STYLES = [
 export default class GridPresenter extends React.Component {
     constructor(props) {
         super(props);
+        this.config = new Config();
     }
 
     getCellStyle(cellPosition) {
@@ -28,9 +30,9 @@ export default class GridPresenter extends React.Component {
     render() {
 
         let rows = [];
-        for (var y = 0; y < this.props.grid.height; y++) {
+        for (var y = 0; y < this.config.height; y++) {
             let cells = []
-            for (var x = 0; x < this.props.grid.width; x++) {
+            for (var x = 0; x < this.config.width; x++) {
                 const cellPosition = {'x': x, 'y': y};
                 cells.push(<td className={this.getCellStyle(cellPosition)} key={this.getCellKey(cellPosition)}></td>)
             }

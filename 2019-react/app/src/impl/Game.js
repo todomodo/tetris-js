@@ -13,7 +13,7 @@ export default class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            grid: new Grid({width: 6, height: 10}),
+            grid: new Grid({}),
             shape: null,
             gameOver: false
         };
