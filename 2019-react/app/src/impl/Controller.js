@@ -34,15 +34,15 @@ export default class Controller extends React.Component {
                 break;
             case 39:
                 //console.log('right arrow');
-                this.props.onShapeStep({'dx': 1, 'dy': 0, 'da': 0});
+                this.props.onShapeMotion({'dx': 1, 'dy': 0, 'da': 0});
                 break;
             case 37:
                 //console.log('left arrow');
-                this.props.onShapeStep({'dx': -1, 'dy': 0, 'da': 0});
+                this.props.onShapeMotion({'dx': -1, 'dy': 0, 'da': 0});
                 break;
             case 38:
                 //console.log('up arrow');
-                this.props.onShapeStep({'dx': 0, 'dy': 0, 'da': 1});
+                this.props.onShapeMotion({'dx': 0, 'dy': 0, 'da': 1});
                 break;
             case 32:
                 console.log('space bar');

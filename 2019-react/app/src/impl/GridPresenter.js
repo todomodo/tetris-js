@@ -39,8 +39,8 @@ export default class GridPresenter extends React.Component {
             rows.push(<tr key={"row_" + y}>{cells}</tr>)
         }
         return (
-            <div className='GridPresenter-outer'>
-                <table className='GridPresenter-table'>
+            <div className='GridPresenter'>
+                <table>
                     <tbody>
                     {rows}
                     </tbody>

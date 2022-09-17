@@ -3,36 +3,36 @@
 */
 import './Game.css';
 import React from 'react';
+import Config from "./Config";
 import Header from './Header';
 import Grid from './Grid';
 import GridPresenter from './GridPresenter';
 import Controller from './Controller';
 import Shape from "./Shape";
+import ShapePreview from "./ShapePreview";
 
 export default class Game extends React.Component {
     constructor(props) {
         super(props);
+        this.config = new Config();
         this.state = {
             grid: new Grid({}),
-            shape: null,
+            shape: this.#buildNewShape(),
             gameOver: false
         };
-        let result = this.state.grid.introduceRandomShape();
-        this.state.shape = result.shape;
-        this.state.gameOver = result.gameOver;
 
         this.handleDbgCompactGrid = this.handleDbgCompactGrid.bind(this);
         this.handleDbgClockTick = this.handleDbgClockTick.bind(this);
     }
 
     /*
-        called by controller to move the current shape one step ahead
+        called by controller to handle shape motion events
     */
-    handleShapeStep = (event) => {
+    handleShapeMotion = (event) => {
         if (this.state.gameOver) {
-            console.log('Game.handleShapeStep: game over');
-        } else if (this.state.grid.isAtTheBottom(this.state.shape)) {
-            console.log('Game.handleShapeStep: at the bottom ' + JSON.stringify(this.state.shape));
+            console.log('Game.handleShapeMotion: game over');
+        } else if (this.state.shape.blocked) {
+            console.log('Game.handleShapeMotion: blocked ' + JSON.stringify(this.state.shape));
         } else {
             let newGrid = new Grid(this.state.grid);
             let newShape = new Shape(this.state.shape);
@@ -52,20 +52,19 @@ export default class Game extends React.Component {
 
 
     /*
-        called by the keypad to request shape drop
+        called by the controller to request shape drop
     */
     handleShapeDrop = (event) => {
         if (this.state.gameOver) {
             console.log('Game.handleShapeDrop: game over');
-        } else if (this.state.grid.isAtTheBottom(this.state.shape)) {
-            console.log('Game.handleShapeDrop: at the bottom ' + JSON.stringify(this.state.shape));
+        } else if (this.state.shape.blocked) {
+            console.log('Game.handleShapeDrop: blocked ' + JSON.stringify(this.state.shape));
         } else {
             let newGrid = new Grid(this.state.grid);
-            let newShape = new Shape(this.state.shape);
-            if (newGrid.dropShape(this.state.shape, newShape)) {
-                this.setState({shape: newShape});
-                this.setState({grid: newGrid});
-            }
+            let result = newGrid.dropShape(this.state.shape);
+            result.newShape.blocked = result.blocked;
+            this.setState({grid: newGrid, shape: result.newShape});
+            console.log('Game.handleShapeDrop: droped ' + JSON.stringify(result.newShape));
         }
     }
 
@@ -88,23 +87,42 @@ export default class Game extends React.Component {
     handleDbgClockTick() {
         if (this.state.gameOver) {
             console.log('Game.handleDbgClockTick: game over');
-        } else if (this.state.grid.isAtTheBottom(this.state.shape)) {
-            // try to put a brand-new shape on the board
+        } else if (this.state.shape.blocked) {
+            // abandon the old shape and introduce a new one
             let newGrid = new Grid(this.state.grid);
-            let result = newGrid.introduceRandomShape();
-            if (result.gameOver) {
-                this.setState({gameOver: true});
-                console.log('Game.handleDbgClockTick: game over, no place for ' + JSON.stringify(result.shape));
-            } else {
-                this.setState({shape: result.shape});
-                this.setState({grid: newGrid});
-                console.log('Game.handleDbgClockTick: GRID ' + JSON.stringify(this.state.grid));
-            }
+            let result = newGrid.introduceShape(this.#buildNewShape());
+            this.setState({grid: newGrid, shape: result.newShape});
+            console.log('Game.handleDbgClockTick: introduced ' + JSON.stringify(this.state.shape));
         } else {
-            // advance the current shape one lne down
-            console.log('Game.handleDbgClockTick');
-            this.handleShapeStep({'dx': 0, 'dy': 1, 'da': 0});
+            // advance the current shape one step down
+            let newGrid = new Grid(this.state.grid);
+            let result = newGrid.advanceShape(this.state.shape, 1, this.config.finish_row + 1);
+            result.newShape.blocked = result.blocked;
+            this.setState({grid: newGrid, shape: result.newShape});
+            console.log('Game.handleDbgClockTick: advanced ' + JSON.stringify(this.state.shape));
         }
+    }
+
+    /*
+        get random int between 0 and max (exclusive)
+    */
+    #getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    #buildNewShape() {
+        const SHAPE_COUNT = 14;
+        const COLOR_COUNT = 9;
+        const ANGLE_COUNT = 4;
+
+        return new Shape({
+            index: this.#getRandomInt(SHAPE_COUNT),
+            color: 2 + this.#getRandomInt(COLOR_COUNT), //the first two colors are invisible
+            angle: this.#getRandomInt(ANGLE_COUNT),
+            x: this.config.width / 2,
+            y: 0,
+            blocked: false
+        });
     }
 
 
@@ -115,9 +133,12 @@ export default class Game extends React.Component {
                 <GridPresenter
                     grid={this.state.grid}
                 />
+                <ShapePreview
+                    shape={this.state.shape}
+                />
                 <Controller
                     shape={this.state.shape}
-                    onShapeStep={this.handleShapeStep}
+                    onShapeMotion={this.handleShapeMotion}
                     onShapeDrop={this.handleShapeDrop}
                     onDbgSetGrid={this.handleDbgSetGrid}
                     onDbgCompactGrid={this.handleDbgCompactGrid}

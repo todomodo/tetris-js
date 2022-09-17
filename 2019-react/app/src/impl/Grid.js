@@ -35,6 +35,7 @@ export default class Grid {
         */
         this.isPixelInsideGrid = this.isPixelInsideGrid.bind(this);
         this.isPixelBlank = this.isPixelBlank.bind(this);
+        this.isPixelBeforeLine = this.isPixelBeforeLine.bind(this);
     }
 
     /*
@@ -76,7 +77,7 @@ export default class Grid {
         true if pixel is inside grid. Used in combination with
         checkShape
     */
-    isPixelInsideGrid(pixelPosition) {
+    isPixelInsideGrid(pixelPosition, checkerParams) {
         return (pixelPosition.x >= 0)
             && (pixelPosition.y >= 0)
             && (pixelPosition.x < this.config.width)
@@ -86,15 +87,23 @@ export default class Grid {
     /*
         true pixel is within the grid AND it's color is blank
     */
-    isPixelBlank(pixelPosition) {
+    isPixelBlank(pixelPosition, checkerParams) {
         return this.isPixelInsideGrid(pixelPosition)
             && (this.getPixel(pixelPosition) === COLOR_NULL);
     }
 
     /*
+        true if pixel is located before certain line
+    */
+    isPixelBeforeLine(pixelPosition, checkerParams) {
+        return (pixelPosition.y < checkerParams.line);
+    }
+
+
+    /*
         true if all shape pixels pass certain condition
     */
-    #checkShape(shape, pixelChecker) {
+    #checkShape(shape, checkerMethod, checkerParams) {
         let shapePixels = shape.getPixels();
         for (var i = 0; i < shapePixels.length; i++) {
             const pixelPosition = {
@@ -102,7 +111,7 @@ export default class Grid {
                 'y': shape.y + shapePixels[i].dy
             };
 
-            if (!pixelChecker(pixelPosition)) {
+            if (!checkerMethod(pixelPosition, checkerParams)) {
                 return false;
             }
         }
@@ -114,11 +123,8 @@ export default class Grid {
         collisions. Returns true if the shape has been moved
     */
     moveShape(oldState, newState) {
-        // erase the original state
-        let noColor = new Shape(oldState);
-        noColor.color = COLOR_NULL;
-        this.printShape(noColor);
-        if (this.#checkShape(newState, this.isPixelBlank)) {
+        this.#eraseShape(oldState);
+        if (this.#checkShape(newState, this.isPixelBlank, {})) {
             // no pixel collisions, print the new state
             this.printShape(newState);
             return true;
@@ -130,88 +136,65 @@ export default class Grid {
     }
 
     /*
-        Execute a drop motion, which is a series of downward replacements
+        Drop shape all the way down to finish line
     */
-    dropShape(oldState, newState) {
-        // erase the original state
-        let noColor = new Shape(oldState);
-        noColor.color = COLOR_NULL;
-        this.printShape(noColor);
-
-        //move as far down as possible
-        do {
-            newState.y += 1;
-        } while (this.#checkShape(newState, this.isPixelBlank))
-        newState.y -= 1;
-
-        if (oldState.y===newState.y) {
-            // not changed, restore the old state
-            this.printShape(oldState);
-            return false;
-        } else {
-            // changed, restore old state
-            this.printShape(newState);
-            return true;
-        }
+    dropShape(shape) {
+        console.log('Grid.dropShape ' + JSON.stringify(shape));
+        return this.advanceShape(shape, this.config.height, this.config.finish_row + 1)
     }
 
     /*
-        True if this shape has reached the bottom of the stack
+        introduce new shape at the top of the grid
     */
-    isAtTheBottom(shape) {
-        // erase the original shape
-        let tmpShape = new Shape(shape);
-        tmpShape.color = COLOR_NULL;
-        this.printShape(tmpShape);
+    introduceShape(shape) {
+        console.log('Grid.introduceShape ' + JSON.stringify(shape));
+        return this.advanceShape(shape, this.config.height, this.config.start_row + 1)
+    }
 
-        //try to move one step down
-        tmpShape.y += 1;
-        let retval = !this.#checkShape(tmpShape, this.isPixelBlank)
+    /*
+        Advance (e.g. move down) shape up to maxSteps until it reaches certain line
+        or encounters an obstacle. Returns true if shape has been advanced
+    */
+    advanceShape(shape, maxSteps, boundaryLine) {
+        let retval = {
+            blocked: false,
+            moved: false,
+            newShape: new Shape(shape)
+        }
 
-        // restore the original shape
-        this.printShape(shape);
+        this.#eraseShape(shape);
 
+        //advance up to maxSteps util encountering an obstacle
+        for (let i = 0; i < maxSteps; i++) {
+            retval.newShape.y += 1;
+            if (this.#canPlaceShape(retval.newShape, boundaryLine)) {
+                retval.moved = true;
+            } else {
+                retval.newShape.y -= 1; //revert the step & mark the shape as blocked
+                retval.blocked = true;
+                break
+            }
+        }
+
+        if (retval.moved) {
+            this.printShape(retval.newShape);
+        } else {
+            this.printShape(shape);
+        }
         return retval;
     }
 
-    /*
-        introduce new random shape at the top of the grid and return a
-        pointer to it. Also return whether the game is over
-    */
-    introduceRandomShape() {
-        const SHAPE_COUNT = 14;
-        const COLOR_COUNT = 9;
-        const ANGLE_COUNT = 4;
-
-        //generate a random shape
-        let introducedShape = new Shape({
-            index: this.getRandomInt(SHAPE_COUNT),
-            color: 2 + this.getRandomInt(COLOR_COUNT),
-            angle: this.getRandomInt(ANGLE_COUNT),
-            x: 2 + this.getRandomInt(this.config.width - 4),
-            y: 0
-        });
-        console.log('Grid.introduceRandomShape ' + JSON.stringify(introducedShape));
-
-        //find the y coordinate
-        while (!this.#checkShape(introducedShape, this.isPixelInsideGrid)) {
-            introducedShape.y += 1;
-        }
-
-        //check for game over
-        if (this.#checkShape(introducedShape, this.isPixelBlank)) {
-            this.printShape(introducedShape);
-            return {shape: introducedShape, gameOver: false};
-        }
-        return {shape: introducedShape, gameOver: true};
+    #canPlaceShape(shape, finishLine) {
+        return this.#checkShape(shape, this.isPixelBlank, {}) &&
+            this.#checkShape(shape, this.isPixelBeforeLine, {line: finishLine});
     }
 
-    /*
-        get random int between 0 and max (exclusive)
-    */
-    getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
+    #eraseShape(shape) {
+        let noColor = new Shape(shape);
+        noColor.color = COLOR_NULL;
+        this.printShape(noColor);
     }
+
 
     /*
         row operations
