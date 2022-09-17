@@ -40,7 +40,7 @@ export default class Grid {
     /*
         print one "pixel" on the grid
     */
-    printPixel(pixelPosition, colorIndex) {
+    #printPixel(pixelPosition, colorIndex) {
         if (this.isPixelInsideGrid(pixelPosition)) {
             this.pixels[pixelPosition.y][pixelPosition.x] = colorIndex;
         }
@@ -57,7 +57,7 @@ export default class Grid {
                 'y': shape.y + shapePixels[i].dy
             };
 
-            this.printPixel(pixelPosition, shape.color);
+            this.#printPixel(pixelPosition, shape.color);
         }
     }
 
@@ -94,7 +94,7 @@ export default class Grid {
     /*
         true if all shape pixels pass certain condition
     */
-    checkShape(shape, pixelChecker) {
+    #checkShape(shape, pixelChecker) {
         let shapePixels = shape.getPixels();
         for (var i = 0; i < shapePixels.length; i++) {
             const pixelPosition = {
@@ -118,7 +118,7 @@ export default class Grid {
         let noColor = new Shape(oldState);
         noColor.color = COLOR_NULL;
         this.printShape(noColor);
-        if (this.checkShape(newState, this.isPixelBlank)) {
+        if (this.#checkShape(newState, this.isPixelBlank)) {
             // no pixel collisions, print the new state
             this.printShape(newState);
             return true;
@@ -141,7 +141,7 @@ export default class Grid {
         //move as far down as possible
         do {
             newState.y += 1;
-        } while (this.checkShape(newState, this.isPixelBlank))
+        } while (this.#checkShape(newState, this.isPixelBlank))
         newState.y -= 1;
 
         if (oldState.y===newState.y) {
@@ -166,7 +166,7 @@ export default class Grid {
 
         //try to move one step down
         tmpShape.y += 1;
-        let retval = !this.checkShape(tmpShape, this.isPixelBlank)
+        let retval = !this.#checkShape(tmpShape, this.isPixelBlank)
 
         // restore the original shape
         this.printShape(shape);
@@ -194,12 +194,12 @@ export default class Grid {
         console.log('Grid.introduceRandomShape ' + JSON.stringify(introducedShape));
 
         //find the y coordinate
-        while (!this.checkShape(introducedShape, this.isPixelInsideGrid)) {
+        while (!this.#checkShape(introducedShape, this.isPixelInsideGrid)) {
             introducedShape.y += 1;
         }
 
         //check for game over
-        if (this.checkShape(introducedShape, this.isPixelBlank)) {
+        if (this.#checkShape(introducedShape, this.isPixelBlank)) {
             this.printShape(introducedShape);
             return {shape: introducedShape, gameOver: false};
         }
@@ -216,47 +216,47 @@ export default class Grid {
     /*
         row operations
     */
-    isCompleteRow(row) {
+    #isCompleteRow(row) {
         for (let i = 0; i < this.config.width; i++) {
             if (this.isPixelBlank({x: i, y: row})) return false;
         }
         return true;
     }
 
-    findCompleteRow() {
+    #findCompleteRow() {
         for (let row = 0; row < this.config.height; row++) {
-            if (this.isCompleteRow(row)) return row;
+            if (this.#isCompleteRow(row)) return row;
         }
         return null;
     }
 
-    copyRow(srcRow, destRow) {
+    #copyRow(srcRow, destRow) {
         for (let i = 0; i < this.config.width; i++) {
-            this.printPixel({x: i, y: destRow}, this.getPixel({x: i, y: srcRow}));
+            this.#printPixel({x: i, y: destRow}, this.getPixel({x: i, y: srcRow}));
         }
     }
 
-    clearRow(row) {
+    #clearRow(row) {
         for (let i = 0; i < this.config.width; i++) {
-            this.printPixel({x: i, y: row}, COLOR_NULL);
+            this.#printPixel({x: i, y: row}, COLOR_NULL);
         }
     }
 
-    spliceRow(row) {
+    #spliceRow(row) {
         for (let i = row; i > 0; i--) {
-            this.copyRow(i - 1, i);
+            this.#copyRow(i - 1, i);
         }
-        this.clearRow(0);
+        this.#clearRow(0);
     }
 
     /*
         compact the grid
     */
     compact() {
-        let row = this.findCompleteRow();
+        let row = this.#findCompleteRow();
         while (row != null) {
-            this.spliceRow(row);
-            row = this.findCompleteRow();
+            this.#spliceRow(row);
+            row = this.#findCompleteRow();
         }
 
     }
