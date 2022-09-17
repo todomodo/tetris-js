@@ -1,12 +1,13 @@
 /*
 	Renders the grid on screen
 */
+import './GridPresenter.css';
 import React from 'react';
 
 const CELL_STYLES = [
-    'color-null', 'color-error', 'color-0', 
+    'color-null', 'color-error', 'color-0',
     'color-1', 'color-2', 'color-3',
-    'color-4', 'color-5', 'color-6', 
+    'color-4', 'color-5', 'color-6',
     'color-7', 'color-8', 'color-9'
 ];
 
@@ -23,7 +24,7 @@ export default class GridPresenter extends React.Component {
     getCellKey(cellPosition) {
         return "cell_" + cellPosition.y + "_" + cellPosition.x;
     }
-    
+
     render() {
 
         let rows = [];
@@ -36,8 +37,8 @@ export default class GridPresenter extends React.Component {
             rows.push(<tr key={"row_" + y}>{cells}</tr>)
         }
         return (
-            <div id='trt-board'>
-                <table id='trt-squares'>
+            <div className='GridPresenter-outer'>
+                <table className='GridPresenter-table'>
                     <tbody>
                     {rows}
                     </tbody>

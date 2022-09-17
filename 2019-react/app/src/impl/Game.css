@@ -1,0 +1,13 @@
+.Game {
+    float: left;
+    width: 50%;
+    align-items: center;
+}
+
+.Game p {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+}

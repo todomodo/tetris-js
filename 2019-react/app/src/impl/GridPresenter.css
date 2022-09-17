@@ -1,0 +1,60 @@
+.GridPresenter-outer {
+    border: 1px solid black;
+    display: inline-block;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.GridPresenter-table td {
+    line-height: 3px;
+    vertical-align: middle;
+    height: 23px;
+    width: 20px;
+    padding: 0;
+    border: 3px groove gray;
+}
+
+.GridPresenter-table .color-null {
+    background-color: white;
+    border: 3px solid white;
+}
+
+.GridPresenter-table .color-0 {
+    background-color: #FFCCFF;
+}
+
+.GridPresenter-table .color-1 {
+    background-color: #FFCC00;
+}
+
+.GridPresenter-table .color-2 {
+    background-color: #FF99FF;
+}
+
+.GridPresenter-table .color-3 {
+    background-color: #00FFFF;
+}
+
+.GridPresenter-table .color-4 {
+    background-color: #66CC99;
+}
+
+.GridPresenter-table .color-5 {
+    background-color: #33FF33;
+}
+
+.GridPresenter-table .color-6 {
+    background-color: #CC33FF;
+}
+
+.GridPresenter-table .color-7 {
+    background-color: #66FFCC;
+}
+
+.GridPresenter-table .color-8 {
+    background-color: #669999;
+}
+
+.GridPresenter-table .color-9 {
+    background-color: #00FFCC;
+}

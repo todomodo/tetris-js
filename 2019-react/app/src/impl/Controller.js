@@ -3,6 +3,7 @@
 	able to play a game with it, but can use it to display different shapes
 	and move them around
 */
+import './Controller.css';
 import React from 'react';
 
 export default class Controller extends React.Component {
@@ -66,7 +67,7 @@ export default class Controller extends React.Component {
     render() {
 
         return (
-            <div id='trt-keypad'>
+            <div className='Controller'>
                 <ul>
                     <li>
                         Use arrows to rotate, move or drop

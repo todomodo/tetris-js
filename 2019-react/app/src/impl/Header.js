@@ -2,6 +2,7 @@
 	Header area containing general information, such as versions, announcements, etc
 */
 import React from 'react';
+import './Header.css';
 
 export default class Header extends React.Component {
 	constructor(props) {
@@ -11,7 +12,7 @@ export default class Header extends React.Component {
 		  
 	render() { 
 	  return(
-		<div className='announcement'>
+		<div className='Header-announcement'>
 			<p>Under development; React {React.version}</p>
 		</div>)
 	}
