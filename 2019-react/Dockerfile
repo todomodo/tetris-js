@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 # general packages
 RUN apt-get update
-RUN apt-get upgrade
+RUN apt-get -y upgrade
 RUN apt-get install -y curl nano wget
 
 # react binaries

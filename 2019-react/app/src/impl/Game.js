@@ -1,22 +1,26 @@
 /*
 	The main game class
 */
-'use strict';
+import React from 'react';
+import Header from './Header';
+import Grid from './Grid';
+import GridPresenter from './GridPresenter';
+import Controller from './Controller';
+import Shape from "./Shape";
 
-
-class TrtGame extends React.Component {
+export default class Game extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {			
-			canvas: new TrtCanvas({width:6, height:10}),
+			grid: new Grid({width:6, height:10}),
 			shape: null,
 			gameOver: false
 		};		
-		let result = this.state.canvas.introduceRandomShape();
+		let result = this.state.grid.introduceRandomShape();
 		this.state.shape = result.shape;
 		this.state.gameOver = result.gameOver;
 		
-		this.handleCompactCanvas = this.handleCompactCanvas.bind(this);
+		this.handleCompactGrid = this.handleCompactGrid.bind(this);
 	}
 	
 	/*
@@ -27,8 +31,8 @@ class TrtGame extends React.Component {
 		if (this.state.gameOver) {
 			console.log('TrtGame.handleShapeDrop: game over, no place for ' + JSON.stringify(this.state.shape));
 		} else {
-			var newCanvas = new TrtCanvas(this.state.canvas);
-			var newShape = new TrtShapePointer(this.state.shape);
+			var newGrid = new Grid(this.state.grid);
+			var newShape = new Shape(this.state.shape);
 			newShape.x+=event.dx;
 			newShape.y+=event.dy;		
 			newShape.angle+=event.da;
@@ -36,9 +40,9 @@ class TrtGame extends React.Component {
 			if (newShape.angle>MAX_ANGLE) {
 				newShape.angle=0;
 			}
-			if (newCanvas.replaceShape(this.state.shape, newShape)) {
+			if (newGrid.replaceShape(this.state.shape, newShape)) {
 				this.setState({shape: newShape});
-				this.setState({canvas: newCanvas});
+				this.setState({grid: newGrid});
 			}
 		}
 	}
@@ -52,60 +56,56 @@ class TrtGame extends React.Component {
 			console.log('TrtGame.handleShapeDrop: game over, no place for ' + JSON.stringify(this.state.shape));
 		} else {
 			// drop the current shape
-			let newCanvas = new TrtCanvas(this.state.canvas);
-			newCanvas.dropShape(this.state.shape);		
+			let newGrid = new Grid(this.state.grid);
+			newGrid.dropShape(this.state.shape);		
 						
 			// try to put a brand new shape on the board
-			let result =  newCanvas.introduceRandomShape();			
+			let result =  newGrid.introduceRandomShape();			
 			if (result.gameOver) { 			
 				this.setState({gameOver: true});				
 				console.log('TrtGame.handleShapeDrop: game over, no place for ' + JSON.stringify(result.shape));
 			}			
 			this.setState({shape: result.shape});
-			this.setState({canvas: newCanvas});	
+			this.setState({grid: newGrid});	
 			
 			
-			console.log('TrtGame.handleShapeDrop: CANVAS ' + JSON.stringify(this.state.canvas));
+			console.log('TrtGame.handleShapeDrop: CANVAS ' + JSON.stringify(this.state.grid));
 			
 		}
 	}
 	
 	/*
-		called by the keypad to set the canvas to a certain state
+		called by the keypad to set the grid to a certain state
 	*/
-	handleSetCanvas = (event) => {
-		console.log('TrtGame.handleSetCanvas: ' + JSON.stringify(event));	
-		var newCanvas = new TrtCanvas(event);		
-		this.setState({canvas: newCanvas});	
+	handleSetGrid = (event) => {
+		console.log('TrtGame.handleSetGrid: ' + JSON.stringify(event));	
+		var newGrid = new Grid(event);		
+		this.setState({grid: newGrid});	
 	}
 	
-	handleCompactCanvas(){
-		console.log('TrtGame.handleCompactCanvas');	
-		var newCanvas = new TrtCanvas(this.state.canvas);
-		newCanvas.compact();
-		this.setState({canvas: newCanvas});	
+	handleCompactGrid(){
+		console.log('TrtGame.handleCompactGrid');	
+		var newGrid = new Grid(this.state.grid);
+		newGrid.compact();
+		this.setState({grid: newGrid});	
 	}
 	
 	
 	render() {
 		return(
 		  <div>
-			<TrtTitle/>
-			<TrtBoard 
-				canvas={this.state.canvas} 
+			<Header/>
+			<GridPresenter
+				grid={this.state.grid}
 			/>
-			<TrtKeypad
+			<Controller
 				shape={this.state.shape}
 				onShapeMotion={this.handleShapeMotion}
 				onShapeDrop={this.handleShapeDrop}
-				onSetCanvas={this.handleSetCanvas}
-				onCompactCanvas={this.handleCompactCanvas}
+				onSetGrid={this.handleSetGrid}
+				onCompactGrid={this.handleCompactGrid}
 			/>
 		  </div>
 		);	 
 	}
 }
-
-ReactDOM.render(
-	React.createElement(TrtGame), 
-	document.querySelector('#trt-game'));
