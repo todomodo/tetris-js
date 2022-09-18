@@ -126,11 +126,23 @@ export default class Shape {
         this.x = props.x;
         this.y = props.y;
         this.blocked = props.blocked;
+        this.initial_angle = props.initial_angle;
     }
 
-    /*
-        true if objects match
-    */
+    transform(dx, dy, da) {
+        this.x += dx;
+        this.y += dy;
+        this.angle += da;
+        const MAX_ANGLE = 3;
+        if (this.angle > MAX_ANGLE) {
+            this.angle = 0;
+        }
+    }
+
+    advance(dy) {
+        this.transform(0, dy, 0);
+    }
+
     equals(other) {
         return ((this.index === other.index) &&
             (this.color === other.color) &&
@@ -141,5 +153,27 @@ export default class Shape {
 
     getPixels() {
         return SHAPES[this.index][this.angle];
+    }
+
+    getBoundaries() {
+        let pixels = this.getPixels();
+        let dx_values = pixels.map(p => p.dx);
+        let dy_values = pixels.map(p => p.dy);
+        return {
+            x_min: Math.min(...dx_values),
+            x_max: Math.max(...dx_values),
+            y_min: Math.min(...dy_values),
+            y_max: Math.max(...dy_values)
+        };
+    }
+
+    // returns the absolute position of a shape pixel, given its index
+    // in the pixles array
+    getPixelPosition(ix, iy, pixelIndex) {
+        let pixels = this.getPixels();
+        return {
+            x: ix + pixels[pixelIndex].dx,
+            y: iy + pixels[pixelIndex].dy
+        };
     }
 }

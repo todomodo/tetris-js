@@ -43,11 +43,7 @@ export default class Canvas {
     printShape(shape, x, y, colorIndex) {
         let shapePixels = shape.getPixels();
         for (let i = 0; i < shapePixels.length; i++) {
-            const pixelPosition = {
-                'x': x + shapePixels[i].dx,
-                'y': y + shapePixels[i].dy
-            };
-
+            const pixelPosition = shape.getPixelPosition(x, y, i);
             this.printPixel(pixelPosition, colorIndex);
         }
     }
@@ -57,12 +53,8 @@ export default class Canvas {
         shape to be fully displayed at the top-right corner
     */
     fitShape(shape) {
-        let shapePixels = shape.getPixels();
-        let dx_values = shapePixels.map(p => p.dx);
-        let dx_min = Math.min(...dx_values);
-        let dy_values = shapePixels.map(p => p.dy);
-        let dy_min = Math.min(...dy_values);
-        this.printShape(shape, Math.abs(dx_min), Math.abs(dy_min), shape.color);
+        let bounds = shape.getBoundaries();
+        this.printShape(shape, Math.abs(bounds.x_min), Math.abs(bounds.y_min), shape.color);
     }
 
     /*

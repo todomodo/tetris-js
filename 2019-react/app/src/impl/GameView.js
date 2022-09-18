@@ -53,13 +53,7 @@ export default class GameView extends React.Component {
         } else {
             let newBoard = new Board(this.state.board);
             let newShape = new Shape(this.state.shape);
-            newShape.x += event.dx;
-            newShape.y += event.dy;
-            newShape.angle += event.da;
-            const MAX_ANGLE = 3;
-            if (newShape.angle > MAX_ANGLE) {
-                newShape.angle = 0;
-            }
+            newShape.transform(event.dx, event.dy, event.da);
             if (newBoard.moveShape(this.state.shape, newShape)) {
                 this.setState({board: newBoard, shape: newShape});
             }
@@ -80,7 +74,7 @@ export default class GameView extends React.Component {
             let result = newBoard.dropShape(this.state.shape);
             result.newShape.blocked = result.blocked;
             this.setState({board: newBoard, shape: result.newShape});
-            console.log('GameView.handleShapeDrop: droped ' + JSON.stringify(result.newShape));
+            //console.log('GameView.handleShapeDrop: droped ' + JSON.stringify(result.newShape));
         }
     }
 
@@ -110,7 +104,7 @@ export default class GameView extends React.Component {
             let result = newBoard.advanceShape(this.state.shape, 1, this.config.finish_row);
             result.newShape.blocked = result.blocked;
             this.setState({board: newBoard, shape: result.newShape});
-            console.log('GameView.handleDbgClockTick: advanced ' + JSON.stringify(result));
+            //console.log('GameView.handleDbgClockTick: advanced ' + JSON.stringify(result));
         }
     }
 

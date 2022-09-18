@@ -55,10 +55,7 @@ export default class Board {
     #checkShape(shape, checkerMethod, checkerParams) {
         let shapePixels = shape.getPixels();
         for (let i = 0; i < shapePixels.length; i++) {
-            const pixelPosition = {
-                x: shape.x + shapePixels[i].dx,
-                y: shape.y + shapePixels[i].dy
-            };
+            const pixelPosition = shape.getPixelPosition(shape.x, shape.y, i);
             if (!checkerMethod(pixelPosition, checkerParams)) {
                 return false;
             }
@@ -77,27 +74,27 @@ export default class Board {
             this.#printShape(newState, newState.color);
             return true;
         } else {
-            // some pixels are unavailable, restore old state
+            // some pixels unavailable, restore old state
             this.#printShape(oldState, oldState.color);
             return false;
         }
     }
 
     /*
-        Drop shape as deep as possible, if no obstacles are met - all the
+        Drop shape as low as possible, if no obstacles are met - all the
         way down to the bottom of the board
     */
     dropShape(shape) {
-        console.log('Board.dropShape ' + JSON.stringify(shape));
+        //console.log('Board.dropShape ' + JSON.stringify(shape));
         return this.advanceShape(shape, this.canvas.height, this.config.finish_row)
     }
 
     /*
         introduce new shape at the top of the board. The top of the board
-        has a "reserved" where new shapes are introduced
+        has a "reserved" area where new shapes are introduced
     */
     introduceShape(shape) {
-        console.log('Board.introduceShape ' + JSON.stringify(shape));
+        //console.log('Board.introduceShape ' + JSON.stringify(shape));
         for (let row = 0; row < this.config.start_row; row++) {
             this.#clearRow(row);
         }
@@ -119,13 +116,13 @@ export default class Board {
 
         //advance up to maxSteps util encountering an obstacle
         for (let i = 0; i < maxSteps; i++) {
-            retval.newShape.y += 1;
+            retval.newShape.advance(1);
             if (this.#canPlaceShape(retval.newShape, boundaryLine)) {
                 //the shape has been moved
                 retval.moved = true;
             } else {
                 //we reached an obstacle, revert to previous position
-                retval.newShape.y -= 1;
+                retval.newShape.advance(-1);
                 retval.blocked = true;
                 break
             }

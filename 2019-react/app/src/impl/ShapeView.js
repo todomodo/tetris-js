@@ -12,18 +12,22 @@ export default class ShapeView extends React.Component {
         super(props);
     }
 
+    #getShape() {
+        if (this.props.current_shape.blocked) {
+            return new Shape(this.props.next_shape);
+        } else {
+            return new Shape(this.props.current_shape);
+        }
+    }
+
     #createRender() {
         let canvas = new Canvas({width: 4, height: 4});
         canvas.clearPixels();
-        if (this.props.current_shape.blocked) {
-            let canonicalShape = new Shape(this.props.next_shape);
-            canonicalShape.angle = 0;
-            canvas.fitShape(canonicalShape);
-        } else {
-            let canonicalShape = new Shape(this.props.current_shape);
-            canonicalShape.angle = 0;
-            canvas.fitShape(canonicalShape);
-        }
+        let shape = this.#getShape();
+        shape.x = 0;
+        shape.y = 0;
+        shape.angle = shape.initial_angle;
+        canvas.fitShape(shape);
         return new CanvasRender({
             canvas: canvas,
             hidden_rows: []
