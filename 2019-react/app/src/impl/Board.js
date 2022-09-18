@@ -33,7 +33,7 @@ export default class Board {
             to other functions
         */
         this.isPixelInsideBoard = this.isPixelInsideBoard.bind(this);
-        this.isPixelBlank = this.isPixelBlank.bind(this);
+        this.isPixelAvailable = this.isPixelAvailable.bind(this);
         this.isPixelBeforeLine = this.isPixelBeforeLine.bind(this);
     }
 
@@ -49,7 +49,7 @@ export default class Board {
     /*
         print shape on the board
     */
-    printShape(shape) {
+    #printShape(shape, color) {
         let shapePixels = shape.getPixels();
         for (var i = 0; i < shapePixels.length; i++) {
             const pixelPosition = {
@@ -57,7 +57,7 @@ export default class Board {
                 'y': shape.y + shapePixels[i].dy
             };
 
-            this.#printPixel(pixelPosition, shape.color);
+            this.#printPixel(pixelPosition, color);
         }
     }
 
@@ -84,9 +84,9 @@ export default class Board {
     }
 
     /*
-        true pixel is within the board AND it's color is blank
+        true if pixel is within the board AND is available for printing
     */
-    isPixelBlank(pixelPosition, checkerParams) {
+    isPixelAvailable(pixelPosition, checkerParams) {
         return this.isPixelInsideBoard(pixelPosition)
             && (this.getPixel(pixelPosition) === COLOR_NULL);
     }
@@ -123,19 +123,20 @@ export default class Board {
     */
     moveShape(oldState, newState) {
         this.#eraseShape(oldState);
-        if (this.#checkShape(newState, this.isPixelBlank, {})) {
-            // no pixel collisions, print the new state
-            this.printShape(newState);
+        if (this.#checkShape(newState, this.isPixelAvailable, {})) {
+            // all pixels available, print the new state
+            this.#printShape(newState, newState.color);
             return true;
         } else {
-            // pixel collisions, restore old state
-            this.printShape(oldState);
+            // some pixels are unavailable, restore old state
+            this.#printShape(oldState, oldState.color);
             return false;
         }
     }
 
     /*
-        Drop shape all the way down to finish line
+        Drop shape as deep as possible, if no obstacles are met - all the
+        way down to the bottom of the board
     */
     dropShape(shape) {
         console.log('Board.dropShape ' + JSON.stringify(shape));
@@ -143,7 +144,8 @@ export default class Board {
     }
 
     /*
-        introduce new shape at the top of the board
+        introduce new shape at the top of the board. The top of the board
+        has a "reserved" where new shapes are introduced
     */
     introduceShape(shape) {
         console.log('Board.introduceShape ' + JSON.stringify(shape));
@@ -155,12 +157,12 @@ export default class Board {
 
     /*
         Advance (e.g. move down) shape up to maxSteps until it reaches certain line
-        or encounters an obstacle. Returns true if shape has been advanced
+        or encounters an obstacle.
     */
     advanceShape(shape, maxSteps, boundaryLine) {
         let retval = {
-            blocked: false,
-            moved: false,
+            blocked: false, //true if shape reached an obstacle
+            moved: false, //true if shape was moved
             newShape: new Shape(shape)
         }
 
@@ -170,31 +172,32 @@ export default class Board {
         for (let i = 0; i < maxSteps; i++) {
             retval.newShape.y += 1;
             if (this.#canPlaceShape(retval.newShape, boundaryLine)) {
+                //the shape has been moved
                 retval.moved = true;
             } else {
-                retval.newShape.y -= 1; //revert the step & mark the shape as blocked
+                //we reached an obstacle, revert to previous position
+                retval.newShape.y -= 1;
                 retval.blocked = true;
                 break
             }
         }
 
         if (retval.moved) {
-            this.printShape(retval.newShape);
+            this.#printShape(retval.newShape, retval.newShape.color);
         } else {
-            this.printShape(shape);
+            this.#printShape(shape, shape.color);
         }
         return retval;
     }
 
     #canPlaceShape(shape, finishLine) {
-        return this.#checkShape(shape, this.isPixelBlank, {}) &&
-            this.#checkShape(shape, this.isPixelBeforeLine, {line: finishLine});
+        let cond1 = this.#checkShape(shape, this.isPixelAvailable, {});
+        let cond2 = this.#checkShape(shape, this.isPixelBeforeLine, {line: finishLine});
+        return (cond1 && cond2);
     }
 
     #eraseShape(shape) {
-        let noColor = new Shape(shape);
-        noColor.color = COLOR_NULL;
-        this.printShape(noColor);
+        this.#printShape(shape, COLOR_NULL);
     }
 
 
@@ -203,7 +206,7 @@ export default class Board {
     */
     #isCompleteRow(row) {
         for (let i = 0; i < this.config.width; i++) {
-            if (this.isPixelBlank({x: i, y: row})) return false;
+            if (this.isPixelAvailable({x: i, y: row})) return false;
         }
         return true;
     }
