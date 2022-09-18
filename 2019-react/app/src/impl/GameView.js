@@ -10,14 +10,16 @@ import BoardView from './BoardView';
 import KeypadView from './KeypadView';
 import Shape from "./Shape";
 import ShapeView from "./ShapeView";
+import ShapeGenerator from "./ShapeGenerator";
 
 export default class GameView extends React.Component {
     constructor(props) {
         super(props);
         this.config = new Config();
+        this.shapeGenerator = new ShapeGenerator();
         this.state = {
             board: new Board({}),
-            shape: this.#buildNewShape(),
+            shape: this.shapeGenerator.getNext(),
             gameOver: false
         };
         this.handleLoad = this.handleLoad.bind(this);
@@ -104,7 +106,7 @@ export default class GameView extends React.Component {
         } else if (this.state.shape.blocked) {
             // abandon the old shape and introduce a new one
             let newBoard = new Board(this.state.board);
-            let result = newBoard.introduceShape(this.#buildNewShape());
+            let result = newBoard.introduceShape(this.shapeGenerator.getNext());
             this.setState({board: newBoard, shape: result.newShape});
             console.log('GameView.handleDbgClockTick: introduced ' + JSON.stringify(result));
         } else {
@@ -117,27 +119,6 @@ export default class GameView extends React.Component {
         }
     }
 
-    /*
-        get random int between 0 and max (exclusive)
-    */
-    #getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
-    }
-
-    #buildNewShape() {
-        const SHAPE_COUNT = 14;
-        const COLOR_COUNT = 9;
-        const ANGLE_COUNT = 4;
-
-        return new Shape({
-            index: this.#getRandomInt(SHAPE_COUNT),
-            color: 2 + this.#getRandomInt(COLOR_COUNT), //the first two colors are invisible
-            angle: this.#getRandomInt(ANGLE_COUNT),
-            x: (this.config.width / 2) - 1,
-            y: 1,
-            blocked: false
-        });
-    }
 
     render() {
         return (
@@ -147,7 +128,8 @@ export default class GameView extends React.Component {
                     board={this.state.board}
                 />
                 <ShapeView
-                    shape={this.state.shape}
+                    current_shape={this.state.shape}
+                    next_shape={this.shapeGenerator.peekNext()}
                 />
                 <KeypadView
                     shape={this.state.shape}
