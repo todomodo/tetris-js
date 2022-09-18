@@ -20,8 +20,7 @@
 }
 
 .ShapeView .color-null {
-    background-color: white;
-    border: 3px solid white;
+    border: 0px;
 }
 
 .ShapeView .color-0 {
