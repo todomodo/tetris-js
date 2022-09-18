@@ -3,39 +3,24 @@
 */
 import './BoardView.css';
 import React from 'react';
-import Config from "./Config";
+import CanvasRender from "./CanvasRender";
 
 export default class BoardView extends React.Component {
     constructor(props) {
         super(props);
-        this.config = new Config();
     }
 
-    getCellStyle(cellPosition) {
-        let colorIndex = this.props.board.getPixel(cellPosition);
-        return this.config.color_styles[colorIndex];
-    }
-
-    getCellKey(cellPosition) {
-        return "cell_" + cellPosition.y + "_" + cellPosition.x;
+    #createRender() {
+        return new CanvasRender({canvas: this.props.board.canvas});
     }
 
     render() {
-
-        let rows = [];
-        for (let y = 0; y < this.config.height; y++) {
-            let cells = []
-            for (let x = 0; x < this.config.width; x++) {
-                const cellPosition = {'x': x, 'y': y};
-                cells.push(<td className={this.getCellStyle(cellPosition)} key={this.getCellKey(cellPosition)}></td>)
-            }
-            rows.push(<tr key={"row_" + y}>{cells}</tr>)
-        }
+        let rend = this.#createRender();
         return (
             <div className='BoardView'>
                 <table>
                     <tbody>
-                    {rows}
+                    {rend.buildRows()}
                     </tbody>
                 </table>
             </div>

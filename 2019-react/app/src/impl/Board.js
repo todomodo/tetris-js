@@ -4,112 +4,61 @@
 
 import Shape from "./Shape";
 import Config from "./Config";
+import Canvas from "./Canvas";
 
-const COLOR_NULL = 0;	// The board's background color. useful for erasing pixels
 
 export default class Board {
     constructor(props) {
         this.config = new Config();
-
-        //init pixels to be a 2d array
-        this.pixels = [];
-        for (var i = 0; i < this.config.height; i++) {
-            this.pixels[i] = [];
-        }
-
-        //copy the values from other object
-        for (var y = 0; y < this.config.height; y++) {
-            for (var x = 0; x < this.config.width; x++) {
-                if (typeof props.pixels == 'undefined') {
-                    this.pixels[y][x] = COLOR_NULL;
-                } else {
-                    this.pixels[y][x] = props.pixels[y][x];
-                }
-            }
+        if (props.canvas === undefined) {
+            this.canvas = new Canvas({width: this.config.width, height: this.config.height});
+            this.canvas.clearPixels();
+        } else {
+            this.canvas = new Canvas({width: props.canvas.width, height: props.canvas.height});
+            this.canvas.copyPixels(props.canvas);
         }
 
         /*
             bind the pixel checkers so they can be passed as parameters
             to other functions
         */
-        this.isPixelInsideBoard = this.isPixelInsideBoard.bind(this);
-        this.isPixelAvailable = this.isPixelAvailable.bind(this);
+        this.isValidPixel = this.isValidPixel.bind(this);
+        this.isBlankPixel = this.isBlankPixel.bind(this);
         this.isPixelBeforeLine = this.isPixelBeforeLine.bind(this);
     }
 
-    /*
-        print one "pixel" on the board
-    */
     #printPixel(pixelPosition, colorIndex) {
-        if (this.isPixelInsideBoard(pixelPosition)) {
-            this.pixels[pixelPosition.y][pixelPosition.x] = colorIndex;
-        }
+        this.canvas.printPixel(pixelPosition, colorIndex);
     }
 
-    /*
-        print shape on the board
-    */
     #printShape(shape, color) {
-        let shapePixels = shape.getPixels();
-        for (var i = 0; i < shapePixels.length; i++) {
-            const pixelPosition = {
-                'x': shape.x + shapePixels[i].dx,
-                'y': shape.y + shapePixels[i].dy
-            };
-
-            this.#printPixel(pixelPosition, color);
-        }
+        this.canvas.printShape(shape, shape.x, shape.y, color);
     }
 
-
-    /*
-        read one "pixel" from the board
-    */
     getPixel(pixelPosition) {
-        if (this.isPixelInsideBoard(pixelPosition)) {
-            return this.pixels[pixelPosition.y][pixelPosition.x];
-        }
-        return COLOR_NULL;
+        return this.canvas.getPixel(pixelPosition);
     }
 
-    /*
-        true if pixel is inside board. Used in combination with
-        checkShape
-    */
-    isPixelInsideBoard(pixelPosition, checkerParams) {
-        return (pixelPosition.x >= 0)
-            && (pixelPosition.y >= 0)
-            && (pixelPosition.x < this.config.width)
-            && (pixelPosition.y < this.config.height);
+    isValidPixel(pixelPosition, checkerParams) {
+        return this.canvas.isValidPixel(pixelPosition);
     }
 
-    /*
-        true if pixel is within the board AND is available for printing
-    */
-    isPixelAvailable(pixelPosition, checkerParams) {
-        return this.isPixelInsideBoard(pixelPosition)
-            && (this.getPixel(pixelPosition) === COLOR_NULL);
+    isBlankPixel(pixelPosition, checkerParams) {
+        return this.canvas.isBlankPixel(pixelPosition);
     }
 
-    /*
-        true if pixel is located before certain line
-    */
     isPixelBeforeLine(pixelPosition, checkerParams) {
         return (pixelPosition.y < checkerParams.line);
     }
 
 
-    /*
-        true if all shape pixels pass certain condition
-    */
     #checkShape(shape, checkerMethod, checkerParams) {
         let shapePixels = shape.getPixels();
-        for (var i = 0; i < shapePixels.length; i++) {
+        for (let i = 0; i < shapePixels.length; i++) {
             const pixelPosition = {
-                'x': shape.x + shapePixels[i].dx,
-                'y': shape.y + shapePixels[i].dy
+                x: shape.x + shapePixels[i].dx,
+                y: shape.y + shapePixels[i].dy
             };
-
             if (!checkerMethod(pixelPosition, checkerParams)) {
                 return false;
             }
@@ -123,7 +72,7 @@ export default class Board {
     */
     moveShape(oldState, newState) {
         this.#eraseShape(oldState);
-        if (this.#checkShape(newState, this.isPixelAvailable, {})) {
+        if (this.#checkShape(newState, this.isBlankPixel, {})) {
             // all pixels available, print the new state
             this.#printShape(newState, newState.color);
             return true;
@@ -140,7 +89,7 @@ export default class Board {
     */
     dropShape(shape) {
         console.log('Board.dropShape ' + JSON.stringify(shape));
-        return this.advanceShape(shape, this.config.height, this.config.finish_row)
+        return this.advanceShape(shape, this.canvas.height, this.config.finish_row)
     }
 
     /*
@@ -152,7 +101,7 @@ export default class Board {
         for (let row = 0; row < this.config.start_row; row++) {
             this.#clearRow(row);
         }
-        return this.advanceShape(shape, this.config.height, this.config.start_row)
+        return this.advanceShape(shape, this.canvas.height, this.config.start_row)
     }
 
     /*
@@ -191,13 +140,13 @@ export default class Board {
     }
 
     #canPlaceShape(shape, finishLine) {
-        let cond1 = this.#checkShape(shape, this.isPixelAvailable, {});
+        let cond1 = this.#checkShape(shape, this.isBlankPixel, {});
         let cond2 = this.#checkShape(shape, this.isPixelBeforeLine, {line: finishLine});
         return (cond1 && cond2);
     }
 
     #eraseShape(shape) {
-        this.#printShape(shape, COLOR_NULL);
+        this.#printShape(shape, this.canvas.COLOR_NULL);
     }
 
 
@@ -206,7 +155,7 @@ export default class Board {
     */
     #isCompleteRow(row) {
         for (let i = 0; i < this.config.width; i++) {
-            if (this.isPixelAvailable({x: i, y: row})) return false;
+            if (this.isBlankPixel({x: i, y: row})) return false;
         }
         return true;
     }
@@ -226,7 +175,7 @@ export default class Board {
 
     #clearRow(row) {
         for (let i = 0; i < this.config.width; i++) {
-            this.#printPixel({x: i, y: row}, COLOR_NULL);
+            this.#printPixel({x: i, y: row}, this.canvas.COLOR_NULL);
         }
     }
 

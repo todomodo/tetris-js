@@ -6,7 +6,7 @@ import Config from "./Config";
 
 export default class Canvas {
     constructor(props) {
-        const COLOR_NULL = 0;	// The canvas background color. useful for erasing pixels
+        this.COLOR_NULL = 0;	// The canvas background color. useful for erasing pixels
         this.config = new Config();
         this.height = props.height
         this.width = props.width
@@ -83,10 +83,20 @@ export default class Canvas {
             && (this.getPixel(pixelPosition) === this.COLOR_NULL);
     }
 
-    clearCanvas() {
+    copyPixels(other) {
         for (let iy = 0; iy < this.height; iy++) {
             for (let ix = 0; ix < this.width; ix++) {
-                this.printPixel({x: ix, y: iy}, this.COLOR_NULL);
+                const pixelPosition = {x: ix, y: iy};
+                this.printPixel(pixelPosition, other.getPixel(pixelPosition));
+            }
+        }
+    }
+
+    clearPixels() {
+        for (let iy = 0; iy < this.height; iy++) {
+            for (let ix = 0; ix < this.width; ix++) {
+                const pixelPosition = {x: ix, y: iy};
+                this.printPixel(pixelPosition, this.COLOR_NULL);
             }
         }
     }

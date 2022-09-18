@@ -16,6 +16,7 @@
     height: 23px;
     width: 20px;
     padding: 0;
+    border: 3px groove gray;
 }
 
 .ShapeView .color-null {
@@ -24,51 +25,41 @@
 }
 
 .ShapeView .color-0 {
-    border: 3px groove gray;
     background-color: #FFCCFF;
 }
 
 .ShapeView .color-1 {
-    border: 3px groove gray;
     background-color: #FFCC00;
 }
 
 .ShapeView .color-2 {
-    border: 3px groove gray;
     background-color: #FF99FF;
 }
 
 .ShapeView .color-3 {
-    border: 3px groove gray;
     background-color: #00FFFF;
 }
 
 .ShapeView .color-4 {
-    border: 3px groove gray;
     background-color: #66CC99;
 }
 
 .ShapeView .color-5 {
-    border: 3px groove gray;
     background-color: #33FF33;
 }
 
 .ShapeView .color-6 {
-    border: 3px groove gray;
     background-color: #CC33FF;
 }
 
 .ShapeView .color-7 {
-    border: 3px groove gray;
     background-color: #66FFCC;
 }
 
 .ShapeView .color-8 {
-    border: 3px groove gray;
     background-color: #669999;
 }
 
 .ShapeView .color-9 {
-    border: 3px groove gray;
     background-color: #00FFCC;
 }
