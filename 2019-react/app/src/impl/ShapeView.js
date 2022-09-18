@@ -24,7 +24,10 @@ export default class ShapeView extends React.Component {
             canonicalShape.angle = 0;
             canvas.fitShape(canonicalShape);
         }
-        return new CanvasRender({canvas: canvas});
+        return new CanvasRender({
+            canvas: canvas,
+            hidden_rows: []
+        });
     }
 
     render() {

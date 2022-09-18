@@ -5,6 +5,7 @@ export default class CanvasRender {
     constructor(props) {
         this.config = new Config();
         this.canvas = props.canvas;
+        this.hidden_rows = props.hidden_rows;
     }
 
     #getCellStyle(cellPosition) {
@@ -23,17 +24,19 @@ export default class CanvasRender {
     buildRows() {
         let rows = [];
         for (let iy = 0; iy < this.canvas.height; iy++) {
-            let cells = []
-            for (let ix = 0; ix < this.canvas.width; ix++) {
-                const cellPosition = {x: ix, y: iy};
-                let tdElement = React.createElement('td', {
-                    className: this.#getCellStyle(cellPosition),
-                    key: this.#getCellKey(cellPosition)
-                });
-                cells.push(tdElement);
+            if (!this.hidden_rows.includes(iy)) {
+                let cells = []
+                for (let ix = 0; ix < this.canvas.width; ix++) {
+                    const cellPosition = {x: ix, y: iy};
+                    let tdElement = React.createElement('td', {
+                        className: this.#getCellStyle(cellPosition),
+                        key: this.#getCellKey(cellPosition)
+                    });
+                    cells.push(tdElement);
+                }
+                let trElement = React.createElement('tr', {key: this.#getRowKey(iy)}, cells);
+                rows.push(trElement)
             }
-            let trElement = React.createElement('tr', {key: this.#getRowKey(iy)}, cells);
-            rows.push(trElement)
         }
         return rows;
     }

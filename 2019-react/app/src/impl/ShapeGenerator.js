@@ -51,12 +51,15 @@ export default class ShapeGenerator {
 
     #buildNewShape() {
         const SHAPE_COUNT = 14;
-        const COLOR_COUNT = 9;
         const ANGLE_COUNT = 4;
+
+        // the first color (one with index "0") is the "erase" color, so it
+        // should not be given to a shape
+        let visibleColor = 1 + this.#getRandomInt(this.config.color_styles.length - 2);
 
         return new Shape({
             index: this.#getRandomInt(SHAPE_COUNT),
-            color: 2 + this.#getRandomInt(COLOR_COUNT), //the first two colors are invisible
+            color: visibleColor,
             angle: this.#getRandomInt(ANGLE_COUNT),
             x: (this.config.width / 2) - 1,
             y: 1,
