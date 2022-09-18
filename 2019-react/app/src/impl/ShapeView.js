@@ -3,7 +3,6 @@
 */
 import './ShapeView.css';
 import React from 'react';
-import Config from "./Config";
 import Canvas from "./Canvas";
 import CanvasRender from "./CanvasRender";
 import Shape from "./Shape";
@@ -11,7 +10,6 @@ import Shape from "./Shape";
 export default class ShapeView extends React.Component {
     constructor(props) {
         super(props);
-        this.config = new Config();
     }
 
     #createRender() {

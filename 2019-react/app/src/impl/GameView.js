@@ -87,11 +87,6 @@ export default class GameView extends React.Component {
     /*
         debug methods
     */
-    handleDbgSetBoard = (event) => {
-        console.log('GameView.handleDbgSetBoard: ' + JSON.stringify(event));
-        var newBoard = new Board(event);
-        this.setState({board: newBoard});
-    }
 
     handleDbgCompactBoard() {
         console.log('GameView.handleDbgCompactBoard');
@@ -135,7 +130,6 @@ export default class GameView extends React.Component {
                     shape={this.state.shape}
                     onShapeMotion={this.handleShapeMotion}
                     onShapeDrop={this.handleShapeDrop}
-                    onDbgSetBoard={this.handleDbgSetBoard}
                     onDbgCompactBoard={this.handleDbgCompactBoard}
                     onDbgClockTick={this.handleDbgClockTick}
                 />

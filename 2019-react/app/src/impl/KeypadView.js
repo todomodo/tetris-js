@@ -14,7 +14,6 @@ export default class KeypadView extends React.Component {
         };
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        this.handleSetBoard = this.handleSetBoard.bind(this);
         this.handleCompactBoard = this.handleCompactBoard.bind(this);
     }
 
@@ -56,12 +55,6 @@ export default class KeypadView extends React.Component {
         }
     }
 
-    handleSetBoard(event) {
-        //let jsonTxt = '{"width":6,"height":10,"pixels":[[0,0,8,0,0,0],[0,0,8,8,8,0],[0,0,0,2,2,0],[0,0,0,0,2,2],[0,0,6,6,6,6],[0,0,0,0,0,7],[0,0,0,7,7,7],[0,0,0,0,10,7],[2,0,10,10,10,3],[2,2,0,0,3,3]]}';
-
-        let jsonTxt = '{"width":6,"height":10,"pixels":[[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,3,3,0,0],[2,2,3,3,8,0],[2,2,8,0,8,0],[0,8,8,8,8,8],[9,9,8,7,7,7],[9,9,0,0,7,0]]}';
-        this.props.onDbgSetBoard(JSON.parse(jsonTxt));
-    }
 
     handleCompactBoard(event) {
         this.props.onDbgCompactBoard();
@@ -76,9 +69,6 @@ export default class KeypadView extends React.Component {
                 <ul>
                     <li>
                         Use arrows to rotate, move or drop
-                    </li>
-                    <li>
-                        <button onClick={this.handleSetBoard}>Set Board</button>
                     </li>
                     <li>
                         <button onClick={this.handleCompactBoard}>Compact Board</button>
