@@ -5,13 +5,6 @@ import './BoardView.css';
 import React from 'react';
 import Config from "./Config";
 
-const CELL_STYLES = [
-    'color-null', 'color-error', 'color-0',
-    'color-1', 'color-2', 'color-3',
-    'color-4', 'color-5', 'color-6',
-    'color-7', 'color-8', 'color-9'
-];
-
 export default class BoardView extends React.Component {
     constructor(props) {
         super(props);
@@ -20,7 +13,7 @@ export default class BoardView extends React.Component {
 
     getCellStyle(cellPosition) {
         let colorIndex = this.props.board.getPixel(cellPosition);
-        return CELL_STYLES[colorIndex];
+        return this.config.color_styles[colorIndex];
     }
 
     getCellKey(cellPosition) {
@@ -30,9 +23,9 @@ export default class BoardView extends React.Component {
     render() {
 
         let rows = [];
-        for (var y = 0; y < this.config.height; y++) {
+        for (let y = 0; y < this.config.height; y++) {
             let cells = []
-            for (var x = 0; x < this.config.width; x++) {
+            for (let x = 0; x < this.config.width; x++) {
                 const cellPosition = {'x': x, 'y': y};
                 cells.push(<td className={this.getCellStyle(cellPosition)} key={this.getCellKey(cellPosition)}></td>)
             }
