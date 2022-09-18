@@ -1,5 +1,6 @@
 /*
-	The main game class
+	The main game class, holds the game state, dispatches events and actions
+	to other game components
 */
 import './GameView.css';
 import React from 'react';

@@ -9,10 +9,6 @@ import React from 'react';
 export default class KeypadView extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            shape: props.shape
-        };
-
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.handleCompactBoard = this.handleCompactBoard.bind(this);
     }
