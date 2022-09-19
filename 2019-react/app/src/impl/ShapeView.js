@@ -24,7 +24,6 @@ export default class ShapeView extends React.Component {
 
     #createRender() {
         let canvas = new Canvas({width: 4, height: 4});
-        canvas.clearPixels();
         let shape = this.#getShape();
         if (shape !== null) {
             shape.x = 0;

@@ -10,12 +10,10 @@ import Canvas from "./Canvas";
 export default class Board {
     constructor(props) {
         this.config = new Config();
-        if (props.canvas === undefined) {
+        if (props === undefined) {
             this.canvas = new Canvas({width: this.config.width, height: this.config.height});
-            this.canvas.clearPixels();
         } else {
-            this.canvas = new Canvas({width: props.canvas.width, height: props.canvas.height});
-            this.canvas.copyPixels(props.canvas);
+            this.canvas = new Canvas(props.canvas);
         }
 
         /*
@@ -151,27 +149,27 @@ export default class Board {
         row operations
     */
     #isCompleteRow(row) {
-        for (let i = 0; i < this.config.width; i++) {
+        for (let i = 0; i < this.canvas.width; i++) {
             if (this.isBlankPixel({x: i, y: row})) return false;
         }
         return true;
     }
 
     #findCompleteRow() {
-        for (let row = 0; row < this.config.height; row++) {
+        for (let row = 0; row < this.canvas.height; row++) {
             if (this.#isCompleteRow(row)) return row;
         }
         return null;
     }
 
     #copyRow(srcRow, destRow) {
-        for (let i = 0; i < this.config.width; i++) {
+        for (let i = 0; i < this.canvas.width; i++) {
             this.#printPixel({x: i, y: destRow}, this.getPixel({x: i, y: srcRow}));
         }
     }
 
     #clearRow(row) {
-        for (let i = 0; i < this.config.width; i++) {
+        for (let i = 0; i < this.canvas.width; i++) {
             this.#printPixel({x: i, y: row}, this.canvas.COLOR_NULL);
         }
     }
@@ -188,7 +186,7 @@ export default class Board {
     */
     compact() {
         let row = this.#findCompleteRow();
-        while (row != null) {
+        while (row !== null) {
             this.#spliceRow(row);
             row = this.#findCompleteRow();
         }

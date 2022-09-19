@@ -2,20 +2,32 @@
 	The canvas is made of cells (aka "pixels") of different colors
 */
 
-import Config from "./Config";
-
 export default class Canvas {
     constructor(props) {
         this.COLOR_NULL = 0;	// The canvas background color. useful for erasing pixels
-        this.config = new Config();
-        this.height = props.height
-        this.width = props.width
 
-        //init pixels to be a 2d array
-        this.pixels = [];
-        for (let i = 0; i < this.height; i++) {
-            this.pixels[i] = [];
+        //set height and width
+        if (props.pixels === undefined) {
+            this.height = props.height;
+            this.width = props.width;
+        } else {
+            this.height = props.pixels.length;
+            this.width = props.pixels[0].length;
         }
+
+        //init the pixels array
+        this.pixels = [];
+        for (let iy = 0; iy < this.height; iy++) {
+            this.pixels[iy] = [];
+            for (let ix = 0; ix < this.width; ix++) {
+                if (props.pixels === undefined) {
+                    this.pixels[iy][ix] = this.COLOR_NULL;
+                } else {
+                    this.pixels[iy][ix] = props.pixels[iy][ix];
+                }
+            }
+        }
+
     }
 
     /*
@@ -73,23 +85,5 @@ export default class Canvas {
     isBlankPixel(pixelPosition) {
         return this.isValidPixel(pixelPosition)
             && (this.getPixel(pixelPosition) === this.COLOR_NULL);
-    }
-
-    copyPixels(other) {
-        for (let iy = 0; iy < this.height; iy++) {
-            for (let ix = 0; ix < this.width; ix++) {
-                const pixelPosition = {x: ix, y: iy};
-                this.printPixel(pixelPosition, other.getPixel(pixelPosition));
-            }
-        }
-    }
-
-    clearPixels() {
-        for (let iy = 0; iy < this.height; iy++) {
-            for (let ix = 0; ix < this.width; ix++) {
-                const pixelPosition = {x: ix, y: iy};
-                this.printPixel(pixelPosition, this.COLOR_NULL);
-            }
-        }
     }
 }
