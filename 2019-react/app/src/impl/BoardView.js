@@ -10,9 +10,17 @@ export default class BoardView extends React.Component {
         super(props);
     }
 
+    #getCanvas() {
+        if ( this.props.board === null ){
+            return null;
+        } else {
+            return this.props.board.canvas;
+        }
+    }
+
     #createRender() {
         return new CanvasRender({
-            canvas: this.props.board.canvas,
+            canvas: this.#getCanvas(),
             hidden_rows: [0, 1, 2, 3]
         });
     }

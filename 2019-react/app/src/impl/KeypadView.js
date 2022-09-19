@@ -24,30 +24,36 @@ export default class KeypadView extends React.Component {
     handleKeyDown(event) {
         switch (event.keyCode) {
             case 40:
-                //console.log('down arrow');
+                //down arrow
+                //console.log('KeypadView.handleKeyDown: drop shape');
                 this.props.onShapeDrop();
                 break;
             case 39:
-                //console.log('right arrow');
+                //right arrow
+                //console.log('KeypadView.handleKeyDown: step right');
                 this.props.onShapeMotion({'dx': 1, 'dy': 0, 'da': 0});
                 break;
             case 37:
-                //console.log('left arrow');
+                //left arrow
+                //console.log('KeypadView.handleKeyDown: step left');
                 this.props.onShapeMotion({'dx': -1, 'dy': 0, 'da': 0});
                 break;
             case 38:
-                //console.log('up arrow');
+                //up arrow
+                //console.log('KeypadView.handleKeyDown: rotate');
                 this.props.onShapeMotion({'dx': 0, 'dy': 0, 'da': 1});
                 break;
             case 32:
-                console.log('space bar');
+                //space bar
+                //console.log('KeypadView.handleKeyDown: start new game');
+                this.props.onNewGame();
                 break;
             case 84:
                 //console.log('t');
                 this.props.onDbgClockTick();
                 break;
             default:
-            // console.warn('unhandled keycode ' +  event.keyCode);
+            // console.warn('KeypadView.handleKeyDown: unhandled keycode ' +  event.keyCode);
         }
     }
 

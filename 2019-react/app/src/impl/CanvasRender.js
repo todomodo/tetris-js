@@ -21,9 +21,17 @@ export default class CanvasRender {
         return "row_" + rowPosition;
     }
 
+    #getCanvasHeight() {
+        if ( this.canvas === null ){
+            return 0;
+        } else {
+            return this.canvas.height;
+        }
+    }
+
     buildRows() {
         let rows = [];
-        for (let iy = 0; iy < this.canvas.height; iy++) {
+        for (let iy = 0; iy < this.#getCanvasHeight(); iy++) {
             if (!this.hidden_rows.includes(iy)) {
                 let cells = []
                 for (let ix = 0; ix < this.canvas.width; ix++) {

@@ -13,7 +13,9 @@ export default class ShapeView extends React.Component {
     }
 
     #getShape() {
-        if (this.props.current_shape.blocked) {
+        if (this.props.current_shape === null) {
+            return null;
+        } else if (this.props.current_shape.blocked) {
             return new Shape(this.props.next_shape);
         } else {
             return new Shape(this.props.current_shape);
@@ -24,10 +26,12 @@ export default class ShapeView extends React.Component {
         let canvas = new Canvas({width: 4, height: 4});
         canvas.clearPixels();
         let shape = this.#getShape();
-        shape.x = 0;
-        shape.y = 0;
-        shape.angle = shape.initial_angle;
-        canvas.fitShape(shape);
+        if (shape !== null) {
+            shape.x = 0;
+            shape.y = 0;
+            shape.angle = shape.initial_angle;
+            canvas.fitShape(shape);
+        }
         return new CanvasRender({
             canvas: canvas,
             hidden_rows: []
