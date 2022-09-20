@@ -109,7 +109,7 @@ export default class Board {
     advanceShape(params) {
         let retval = {
             blocked: false, //true if shape reached an obstacle
-            moved: false, //true if shape was moved
+            steps: 0, //how many steps were made
             new_shape: new Shape(params.shape)
         }
 
@@ -123,11 +123,10 @@ export default class Board {
         for (let i = 0; i < max_steps; i++) {
             retval.new_shape.advance(1);
             if (this.#canPlaceShape(retval.new_shape, end_row)) {
-                //the shape has been moved
-                retval.moved = true;
+                //the shape has been moved one step down
+                retval.steps += 1;
             } else {
-                //we reached an obstacle before reaching the end_row
-                // revert to previous position
+                //we reached an obstacle before, revert to previous position
                 retval.new_shape.advance(-1);
                 break
             }
@@ -138,7 +137,7 @@ export default class Board {
         retval.blocked = !this.#canPlaceShape(retval.new_shape, end_row);
         retval.new_shape.advance(-1);
 
-        if (retval.moved) {
+        if (retval.steps > 0) {
             this.#printShape(retval.new_shape, retval.new_shape.color);
         } else {
             this.#printShape(params.shape, params.shape.color);
@@ -202,7 +201,7 @@ export default class Board {
     */
     compact() {
         let row = this.#findCompleteRow();
-        if (row>-1) {
+        if (row > -1) {
             //console.log('Board.compact: ' + JSON.stringify(this.canvas.pixels));
         }
         while (row > -1) {

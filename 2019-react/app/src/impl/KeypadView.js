@@ -89,7 +89,7 @@ export default class KeypadView extends React.Component {
                     </tr>
                     <tr>
                         <td colSpan="2">Elements</td>
-                        <td id="TRT_ID_SHAPECOUNT">0</td>
+                        <td id="TRT_ID_SHAPECOUNT">{this.props.tracker.shapes_count}</td>
                     </tr>
                     <tr>
                         <td colSpan="2">Lines</td>

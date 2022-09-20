@@ -30,10 +30,13 @@ export default class GameView extends React.Component {
 
     handleNewGame() {
         console.log('GameView.handleNewGame: ... ');
-        let new_board = new Board();
-        let result = new_board.introduceShape(this.shapeGenerator.getNext());
         let new_tracker = new Tracker(this.state.tracker);
         new_tracker.newGame();
+
+        let new_board = new Board();
+        let result = new_board.introduceShape(this.shapeGenerator.getNext());
+        new_tracker.addShape();
+
         this.#updateState({
             board: new_board,
             shape: result.new_shape,
@@ -89,10 +92,14 @@ export default class GameView extends React.Component {
         } else {
             if (this.state.tracker.blocked) {
                 // abandon the old shape and introduce a new one
-                let new_board = this.#buildCompactedBoard();
-                let result = new_board.introduceShape(this.shapeGenerator.getNext());
                 let new_tracker = new Tracker(this.state.tracker);
                 new_tracker.blocked = false;
+
+                let new_board = this.#buildCompactedBoard();
+
+                let result = new_board.introduceShape(this.shapeGenerator.getNext());
+                new_tracker.addShape();
+
                 this.#updateState({
                     board: new_board,
                     shape: result.new_shape,
@@ -101,13 +108,14 @@ export default class GameView extends React.Component {
                 console.log('GameView.handleDbgClockTick: introduced ' + JSON.stringify(result));
             } else {
                 // advance the current shape one step down
+                let new_tracker = new Tracker(this.state.tracker);
                 let new_board = this.#buildCompactedBoard();
                 let result = new_board.advanceShape({
                     shape: this.state.shape,
                     max_steps: 1
                 });
-                let new_tracker = new Tracker(this.state.tracker);
                 new_tracker.blocked = result.blocked;
+                new_tracker.addSteps(result.steps);
                 this.#updateState({
                     board: new_board,
                     shape: result.new_shape,
