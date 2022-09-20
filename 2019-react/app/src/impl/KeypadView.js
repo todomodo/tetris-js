@@ -11,7 +11,6 @@ export default class KeypadView extends React.Component {
     constructor(props) {
         super(props);
         this.handleKeyDown = this.handleKeyDown.bind(this);
-        this.handleCompactBoard = this.handleCompactBoard.bind(this);
     }
 
     componentDidMount() {
@@ -57,12 +56,6 @@ export default class KeypadView extends React.Component {
             // console.warn('KeypadView.handleKeyDown: unhandled keycode ' +  event.keyCode);
         }
     }
-
-
-    handleCompactBoard(event) {
-        this.props.onDbgCompactBoard();
-    }
-
 
     render() {
 

@@ -125,7 +125,6 @@ export default class Shape {
         this.angle = props.angle;
         this.x = props.x;
         this.y = props.y;
-        this.blocked = props.blocked;
         this.initial_angle = props.initial_angle;
     }
 

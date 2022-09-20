@@ -69,8 +69,7 @@ export default class ShapeGenerator {
             initial_angle: initial_angle,
             angle: initial_angle,
             x: (this.config.width / 2) - 1,
-            y: 1,
-            blocked: false
+            y: 1
         });
     }
 }
