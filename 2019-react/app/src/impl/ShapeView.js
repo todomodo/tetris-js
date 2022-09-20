@@ -39,12 +39,13 @@ export default class ShapeView extends React.Component {
         let rend = this.#createRender();
         return (
             <div className='ShapeView'>
-                <p>Shape View</p>
-                <table>
-                    <tbody>
-                    {rend.buildRows()}
-                    </tbody>
-                </table>
+
+                    <table>
+                        <tbody>
+                        {rend.buildRows()}
+                        </tbody>
+                    </table>
+
             </div>
         )
     }
