@@ -25,34 +25,33 @@ export default class KeypadView extends React.Component {
         switch (event.keyCode) {
             case 40:
                 //down arrow
-                //console.log('KeypadView.handleKeyDown: drop shape');
                 this.props.onShapeDrop();
                 break;
             case 39:
                 //right arrow
-                //console.log('KeypadView.handleKeyDown: step right');
                 this.props.onShapeMotion({'dx': 1, 'dy': 0, 'da': 0});
                 break;
             case 37:
                 //left arrow
-                //console.log('KeypadView.handleKeyDown: step left');
                 this.props.onShapeMotion({'dx': -1, 'dy': 0, 'da': 0});
                 break;
             case 38:
                 //up arrow
-                //console.log('KeypadView.handleKeyDown: rotate');
                 this.props.onShapeMotion({'dx': 0, 'dy': 0, 'da': 1});
                 break;
             case 32:
                 //space bar
-                //console.log('KeypadView.handleKeyDown: start new game');
                 this.props.onNewGame();
                 break;
                 break;
             default:
-            // console.warn('KeypadView.handleKeyDown: unhandled keycode ' +  event.keyCode);
         }
     }
+
+    statusText() {
+        return this.props.tracker.status;
+    }
+
 
     render() {
 
@@ -61,7 +60,7 @@ export default class KeypadView extends React.Component {
                 <table>
                     <tbody>
                     <tr>
-                        <td colSpan="3" bgcolor="LightBlue">Game Ready!</td>
+                        <td colSpan="3" bgcolor="LightBlue">{this.statusText()}</td>
                     </tr>
                     <tr>
                         <td className='spacer' colSpan="3"></td>

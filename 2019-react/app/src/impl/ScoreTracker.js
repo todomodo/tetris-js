@@ -3,7 +3,7 @@ export default class ScoreTracker {
     constructor(props) {
         let params = props ?? {};
 
-        this.status = params.status ?? "CREATED";
+        this.status = params.status ?? "READY";
 
         this.shapes_count = params.shapes_count ?? 0;
 
@@ -19,12 +19,16 @@ export default class ScoreTracker {
         return (this.status !== "STARTED");
     }
 
-    newGame() {
+    startGame() {
         this.status = "STARTED";
         this.blocked = false;
         this.shapes_count = 0;
         this.steps_count = 0;
         this.lines_count = 0;
+    }
+
+    endGame() {
+        this.status = "OVER";
     }
 
     addShape(shape) {

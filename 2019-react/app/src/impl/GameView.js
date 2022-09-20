@@ -36,17 +36,19 @@ export default class GameView extends React.Component {
 
         //prepare the tracker & the board
         let new_tracker = new ScoreTracker(this.state.tracker);
-        new_tracker.newGame();
+        new_tracker.startGame();
         let new_board = new Board();
 
-        //introduce the new shape
-        let shape_info = new_board.introduceShape(this.shapeGenerator.getNext());
+        //introduce the first shape
+        let shape_info = new_board.introduceShape(
+            this.shapeGenerator.getNext());
+
         new_tracker.addShape(shape_info.new_shape);
 
         this.#updateState({
+            tracker: new_tracker,
             board: new_board,
-            shape: shape_info.new_shape,
-            tracker: new_tracker
+            shape: shape_info.new_shape
         });
     }
 
@@ -84,9 +86,9 @@ export default class GameView extends React.Component {
             new_tracker.blocked = true;
 
             this.#updateState({
+                tracker: new_tracker,
                 board: new_board,
-                shape: shape_info.new_shape,
-                tracker: new_tracker
+                shape: shape_info.new_shape
             });
             //console.log('GameView.handleShapeDrop: droped ' + JSON.stringify(shape_info.new_shape));
         }
@@ -108,13 +110,21 @@ export default class GameView extends React.Component {
                 // abandon the old shape and introduce a new one
                 let shape_info = board_info.new_board.introduceShape(
                     this.shapeGenerator.getNext());
-                new_tracker.addShape(shape_info.new_shape);
 
-                this.#updateState({
-                    board: board_info.new_board,
-                    shape: shape_info.new_shape,
-                    tracker: new_tracker
-                });
+                if (shape_info === null) {
+                    new_tracker.endGame();
+                    this.#updateState({
+                        tracker: new_tracker,
+                        board: board_info.new_board
+                    });
+                } else {
+                    new_tracker.addShape(shape_info.new_shape);
+                    this.#updateState({
+                        tracker: new_tracker,
+                        board: board_info.new_board,
+                        shape: shape_info.new_shape
+                    });
+                }
             } else {
                 //prepare the tracker
                 let new_tracker = new ScoreTracker(this.state.tracker);
@@ -132,9 +142,9 @@ export default class GameView extends React.Component {
                 new_tracker.addSteps(shape_info.steps);
 
                 this.#updateState({
+                    tracker: new_tracker,
                     board: board_info.new_board,
-                    shape: shape_info.new_shape,
-                    tracker: new_tracker
+                    shape: shape_info.new_shape
                 });
                 //console.log('GameView.handlePulse: advanced ' + JSON.stringify(shape_info));
             }

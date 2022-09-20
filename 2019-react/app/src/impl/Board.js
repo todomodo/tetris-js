@@ -92,14 +92,20 @@ export default class Board {
         has a "reserved" area where new shapes are introduced
     */
     introduceShape(shape) {
-        //console.log('Board.introduceShape ' + JSON.stringify(shape));
-        for (let row = 0; row < this.config.start_row; row++) {
-            this.#clearRow(row);
+        if (this.#isBlankRow(this.config.start_row)) {
+            //start row is available, we can introduce a new shape
+            for (let row = 0; row < this.config.start_row; row++) {
+                this.#clearRow(row);
+            }
+            return this.advanceShape({
+                shape: shape,
+                end_row: this.config.start_row
+            });
+        } else {
+            // start row is not blank, the board is full, this usually means the
+            // game is over
+            return null;
         }
-        return this.advanceShape({
-            shape: shape,
-            end_row: this.config.start_row
-        });
     }
 
     /*
@@ -159,6 +165,14 @@ export default class Board {
     /*
         row operations
     */
+
+    #isBlankRow(row) {
+        for (let i = 0; i < this.canvas.width; i++) {
+            if (!this.isBlankPixel({x: i, y: row})) return false;
+        }
+        return true;
+    }
+
     #isCompleteRow(row) {
         for (let i = 0; i < this.canvas.width; i++) {
             if (this.isBlankPixel({x: i, y: row})) return false;
