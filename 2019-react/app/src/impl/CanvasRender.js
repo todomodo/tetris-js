@@ -8,17 +8,17 @@ export default class CanvasRender {
         this.hidden_rows = props.hidden_rows;
     }
 
-    #getCellStyle(cellPosition) {
-        let colorIndex = this.canvas.getPixel(cellPosition);
-        return this.config.color_styles[colorIndex];
+    #getCellStyle(cell_position) {
+        let color_index = this.canvas.getPixel(cell_position);
+        return this.config.color_styles[color_index];
     }
 
-    #getCellKey(cellPosition) {
-        return "cell_" + cellPosition.y + "_" + cellPosition.x;
+    #getCellKey(cell_position) {
+        return "cell_" + cell_position.y + "_" + cell_position.x;
     }
 
-    #getRowKey(rowPosition) {
-        return "row_" + rowPosition;
+    #getRowKey(row_position) {
+        return "row_" + row_position;
     }
 
     #getCanvasHeight() {
@@ -35,15 +35,15 @@ export default class CanvasRender {
             if (!this.hidden_rows.includes(iy)) {
                 let cells = []
                 for (let ix = 0; ix < this.canvas.width; ix++) {
-                    const cellPosition = {x: ix, y: iy};
-                    let tdElement = React.createElement('td', {
-                        className: this.#getCellStyle(cellPosition),
-                        key: this.#getCellKey(cellPosition)
+                    const cell_position = {x: ix, y: iy};
+                    let td_element = React.createElement('td', {
+                        className: this.#getCellStyle(cell_position),
+                        key: this.#getCellKey(cell_position)
                     });
-                    cells.push(tdElement);
+                    cells.push(td_element);
                 }
-                let trElement = React.createElement('tr', {key: this.#getRowKey(iy)}, cells);
-                rows.push(trElement)
+                let tr_element = React.createElement('tr', {key: this.#getRowKey(iy)}, cells);
+                rows.push(tr_element);
             }
         }
         return rows;

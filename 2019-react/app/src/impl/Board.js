@@ -25,36 +25,36 @@ export default class Board {
         this.isPixelBeforeLine = this.isPixelBeforeLine.bind(this);
     }
 
-    #printPixel(pixelPosition, colorIndex) {
-        this.canvas.printPixel(pixelPosition, colorIndex);
+    #printPixel(pixel_position, color_index) {
+        this.canvas.printPixel(pixel_position, color_index);
     }
 
     #printShape(shape, color) {
         this.canvas.printShape(shape, shape.x, shape.y, color);
     }
 
-    getPixel(pixelPosition) {
-        return this.canvas.getPixel(pixelPosition);
+    getPixel(pixel_position) {
+        return this.canvas.getPixel(pixel_position);
     }
 
-    isValidPixel(pixelPosition, checkerParams) {
-        return this.canvas.isValidPixel(pixelPosition);
+    isValidPixel(pixel_position, checker_params) {
+        return this.canvas.isValidPixel(pixel_position);
     }
 
-    isBlankPixel(pixelPosition, checkerParams) {
-        return this.canvas.isBlankPixel(pixelPosition);
+    isBlankPixel(pixel_position, checker_params) {
+        return this.canvas.isBlankPixel(pixel_position);
     }
 
-    isPixelBeforeLine(pixelPosition, checkerParams) {
-        return (pixelPosition.y < checkerParams.line);
+    isPixelBeforeLine(pixel_position, checker_params) {
+        return (pixel_position.y < checker_params.line);
     }
 
 
-    #checkShape(shape, checkerMethod, checkerParams) {
+    #checkShape(shape, checkerMethod, checker_params) {
         let shapePixels = shape.getPixels();
         for (let i = 0; i < shapePixels.length; i++) {
-            const pixelPosition = shape.getPixelPosition(shape.x, shape.y, i);
-            if (!checkerMethod(pixelPosition, checkerParams)) {
+            const pixel_position = shape.getPixelPosition(shape.x, shape.y, i);
+            if (!checkerMethod(pixel_position, checker_params)) {
                 return false;
             }
         }
@@ -65,15 +65,15 @@ export default class Board {
         Attempt to move the shape to a new state while checking for pixel
         collisions. Returns true if the shape has been moved
     */
-    moveShape(oldState, newState) {
-        this.#eraseShape(oldState);
-        if (this.#checkShape(newState, this.isBlankPixel, {})) {
+    moveShape(old_state, new_state) {
+        this.#eraseShape(old_state);
+        if (this.#checkShape(new_state, this.isBlankPixel, {})) {
             // all pixels available, print the new state
-            this.#printShape(newState, newState.color);
+            this.#printShape(new_state, new_state.color);
             return true;
         } else {
             // some pixels unavailable, restore old state
-            this.#printShape(oldState, oldState.color);
+            this.#printShape(old_state, old_state.color);
             return false;
         }
     }
@@ -119,6 +119,7 @@ export default class Board {
         this.#eraseShape(params.shape);
 
         //advance up to max_steps util encountering an obstacle
+        //or reaching the end row
         for (let i = 0; i < max_steps; i++) {
             retval.new_shape.advance(1);
             if (this.#canPlaceShape(retval.new_shape, end_row)) {
@@ -128,12 +129,14 @@ export default class Board {
                 //we reached an obstacle before reaching the end_row
                 // revert to previous position
                 retval.new_shape.advance(-1);
-                retval.blocked = true;
                 break
             }
         }
 
-        //check if we have reached the end_row
+        //check if shape can be moved further
+        retval.new_shape.advance(1);
+        retval.blocked = !this.#canPlaceShape(retval.new_shape, end_row);
+        retval.new_shape.advance(-1);
 
         if (retval.moved) {
             this.#printShape(retval.new_shape, retval.new_shape.color);
@@ -143,9 +146,9 @@ export default class Board {
         return retval;
     }
 
-    #canPlaceShape(shape, finishLine) {
+    #canPlaceShape(shape, end_row) {
         let cond1 = this.#checkShape(shape, this.isBlankPixel, {});
-        let cond2 = this.#checkShape(shape, this.isPixelBeforeLine, {line: finishLine});
+        let cond2 = this.#checkShape(shape, this.isPixelBeforeLine, {line: end_row});
         return (cond1 && cond2);
     }
 
@@ -168,18 +171,22 @@ export default class Board {
         for (let row = 0; row < this.canvas.height; row++) {
             if (this.#isCompleteRow(row)) return row;
         }
-        return null;
+        return -1;
     }
 
-    #copyRow(srcRow, destRow) {
+    #copyRow(src_row, dest_row) {
         for (let i = 0; i < this.canvas.width; i++) {
-            this.#printPixel({x: i, y: destRow}, this.getPixel({x: i, y: srcRow}));
+            this.#printPixel(
+                {x: i, y: dest_row},
+                this.getPixel({x: i, y: src_row}));
         }
     }
 
     #clearRow(row) {
         for (let i = 0; i < this.canvas.width; i++) {
-            this.#printPixel({x: i, y: row}, this.canvas.COLOR_NULL);
+            this.#printPixel(
+                {x: i, y: row},
+                this.canvas.COLOR_NULL);
         }
     }
 
@@ -195,7 +202,7 @@ export default class Board {
     */
     compact() {
         let row = this.#findCompleteRow();
-        while (row !== null) {
+        while (row > -1) {
             this.#spliceRow(row);
             row = this.#findCompleteRow();
         }

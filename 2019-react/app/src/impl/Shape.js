@@ -169,11 +169,11 @@ export default class Shape {
 
     // returns the absolute position of a shape pixel, given its index
     // in the pixles array
-    getPixelPosition(ix, iy, pixelIndex) {
+    getPixelPosition(ix, iy, pixel_index) {
         let pixels = this.getPixels();
         return {
-            x: ix + pixels[pixelIndex].dx,
-            y: iy + pixels[pixelIndex].dy
+            x: ix + pixels[pixel_index].dx,
+            y: iy + pixels[pixel_index].dy
         };
     }
 }

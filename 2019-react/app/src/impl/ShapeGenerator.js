@@ -9,15 +9,14 @@ export default class ShapeGenerator {
     constructor(props) {
         this.config = new Config();
         this.items = {};
-        this.headIndex = 0;
-        this.tailIndex = 0;
+        this.head_index = 0;
+        this.tail_index = 0;
         this.indexes = [0, 1, 2, 3, 4];
         //this.indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
         this.angles = [0, 1, 2, 3];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 5; i++) {
             this.#enqueue(this.#buildNewShape());
         }
-
     }
 
     getNext() {
@@ -30,23 +29,23 @@ export default class ShapeGenerator {
     }
 
     #enqueue(item) {
-        this.items[this.tailIndex] = item;
-        this.tailIndex++;
+        this.items[this.tail_index] = item;
+        this.tail_index++;
     }
 
     #dequeue() {
-        const item = this.items[this.headIndex];
-        delete this.items[this.headIndex];
-        this.headIndex++;
+        const item = this.items[this.head_index];
+        delete this.items[this.head_index];
+        this.head_index++;
         return item;
     }
 
     #peek() {
-        return this.items[this.headIndex];
+        return this.items[this.head_index];
     }
 
     get #length() {
-        return this.tailIndex - this.headIndex;
+        return this.tail_index - this.head_index;
     }
 
     // generate random integer in the range [0 .. max)

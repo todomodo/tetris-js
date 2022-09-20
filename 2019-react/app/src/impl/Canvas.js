@@ -33,18 +33,18 @@ export default class Canvas {
     /*
         print one "pixel"
     */
-    printPixel(pixelPosition, colorIndex) {
-        if (this.isValidPixel(pixelPosition)) {
-            this.pixels[pixelPosition.y][pixelPosition.x] = colorIndex;
+    printPixel(pixel_position, color_index) {
+        if (this.isValidPixel(pixel_position)) {
+            this.pixels[pixel_position.y][pixel_position.x] = color_index;
         }
     }
 
     /*
        read one "pixel"
    */
-    getPixel(pixelPosition) {
-        if (this.isValidPixel(pixelPosition)) {
-            return this.pixels[pixelPosition.y][pixelPosition.x];
+    getPixel(pixel_position) {
+        if (this.isValidPixel(pixel_position)) {
+            return this.pixels[pixel_position.y][pixel_position.x];
         }
         return this.COLOR_NULL;
     }
@@ -52,11 +52,11 @@ export default class Canvas {
     /*
         print entire shape
     */
-    printShape(shape, x, y, colorIndex) {
-        let shapePixels = shape.getPixels();
-        for (let i = 0; i < shapePixels.length; i++) {
-            const pixelPosition = shape.getPixelPosition(x, y, i);
-            this.printPixel(pixelPosition, colorIndex);
+    printShape(shape, x, y, color_index) {
+        let shape_pixels = shape.getPixels();
+        for (let i = 0; i < shape_pixels.length; i++) {
+            const pixel_position = shape.getPixelPosition(x, y, i);
+            this.printPixel(pixel_position, color_index);
         }
     }
 
@@ -72,18 +72,18 @@ export default class Canvas {
     /*
         true if pixel is within the canvas
     */
-    isValidPixel(pixelPosition) {
-        return (pixelPosition.x >= 0)
-            && (pixelPosition.y >= 0)
-            && (pixelPosition.x < this.width)
-            && (pixelPosition.y < this.height);
+    isValidPixel(pixel_position) {
+        return (pixel_position.x >= 0)
+            && (pixel_position.y >= 0)
+            && (pixel_position.x < this.width)
+            && (pixel_position.y < this.height);
     }
 
     /*
         true if pixel is within the canvas AND is blank
     */
-    isBlankPixel(pixelPosition) {
-        return this.isValidPixel(pixelPosition)
-            && (this.getPixel(pixelPosition) === this.COLOR_NULL);
+    isBlankPixel(pixel_position) {
+        return this.isValidPixel(pixel_position)
+            && (this.getPixel(pixel_position) === this.COLOR_NULL);
     }
 }
