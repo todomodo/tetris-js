@@ -1,4 +1,4 @@
-export default class ScoreTracker {
+export default class StateTracker {
 
     constructor(props) {
         let params = props ?? {};
@@ -15,12 +15,16 @@ export default class ScoreTracker {
         this.blocked = params.blocked ?? false;
     }
 
+    isGameRunning() {
+        return (this.status === "RUNNING");
+    }
+
     isGameOver() {
-        return (this.status !== "STARTED");
+        return !this.isGameRunning();
     }
 
     startGame() {
-        this.status = "STARTED";
+        this.status = "RUNNING";
         this.blocked = false;
         this.shapes_count = 0;
         this.steps_count = 0;
@@ -33,7 +37,7 @@ export default class ScoreTracker {
 
     addShape(shape) {
         this.shapes_count += 1;
-        console.log('ScoreTracker.addShape: ' + JSON.stringify(shape));
+        //console.log('StateTracker.addShape: ' + JSON.stringify(shape));
     }
 
     addSteps(count) {

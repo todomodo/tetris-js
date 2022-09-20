@@ -14,7 +14,9 @@ export default class PulseGenerator extends React.Component {
     }
 
     sendPulse() {
-        this.props.onPulse();
+        if (this.props.tracker.isGameRunning()) {
+            this.props.onPulse();
+        }
     }
 
     render() {
