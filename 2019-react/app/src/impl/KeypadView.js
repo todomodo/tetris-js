@@ -115,9 +115,6 @@ export default class KeypadView extends React.Component {
                         <td bordercolor="White"><Link onClick={this.props.onNewGame}>Space Bar</Link></td>
                         <td></td>
                     </tr>
-                    <tr>
-                        <td colSpan="3"></td>
-                    </tr>
                     </tbody>
                 </table>
             </div>)
