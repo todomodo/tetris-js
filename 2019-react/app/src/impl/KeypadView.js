@@ -5,6 +5,7 @@
 */
 import './KeypadView.css';
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 export default class KeypadView extends React.Component {
     constructor(props) {
@@ -67,15 +68,58 @@ export default class KeypadView extends React.Component {
 
         return (
             <div className='KeypadView'>
-                <p>Keypad</p>
-                <ul>
-                    <li>
-                        Use arrows to rotate, move or drop
-                    </li>
-                    <li>
-                        <button onClick={this.handleCompactBoard}>Compact Board</button>
-                    </li>
-                </ul>
+                <table id="TRT_ID_KEYPAD" cellSpacing="0" cellPadding="0" border="1">
+                    <tbody>
+                    <tr>
+                        <td id="TRT_ID_STATUS" colSpan="3" bgcolor="LightBlue">Game Ready!</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="3"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td bordercolor="White"><Link
+                            onClick={() => this.props.onShapeMotion({dx: 0, dy: 0, da: 1})}>Up</Link></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td bordercolor="White"><Link
+                            onClick={() => this.props.onShapeMotion({dx: -1, dy: 0, da: 0})}>Left</Link></td>
+                        <td></td>
+                        <td bordercolor="White"><Link
+                            onClick={() => this.props.onShapeMotion({dx: 1, dy: 0, da: 0})}>Right</Link></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td bordercolor="White"><Link onClick={this.props.onShapeDrop}>Down</Link></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">Elements</td>
+                        <td id="TRT_ID_SHAPECOUNT">0</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">Lines</td>
+                        <td id="TRT_ID_LINECOUNT">0</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">Score</td>
+                        <td id="TRT_ID_SCORECOUNT">0</td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">Level</td>
+                        <td id="TRT_ID_LEVELCOUNT">0</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td bordercolor="White"><Link onClick={this.props.onNewGame}>Space Bar</Link></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colSpan="3"></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>)
     }
 }
