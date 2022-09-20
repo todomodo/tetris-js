@@ -97,7 +97,7 @@ export default class KeypadView extends React.Component {
                     </tr>
                     <tr>
                         <td className='boxed' colSpan="2">Lines</td>
-                        <td className='boxed'>0</td>
+                        <td className='boxed'>{this.props.tracker.lines_count}</td>
                     </tr>
                     <tr>
                         <td className='boxed' colSpan="2">Score</td>
