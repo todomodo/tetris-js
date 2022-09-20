@@ -107,7 +107,7 @@ export default class Board {
         or encounters an obstacle.
     */
     advanceShape(params) {
-        let retval = {
+        let shape_info = {
             blocked: false, //true if shape reached an obstacle
             steps: 0, //how many steps were made
             new_shape: new Shape(params.shape)
@@ -121,28 +121,28 @@ export default class Board {
         //advance up to max_steps util encountering an obstacle
         //or reaching the end row
         for (let i = 0; i < max_steps; i++) {
-            retval.new_shape.advance(1);
-            if (this.#canPlaceShape(retval.new_shape, end_row)) {
+            shape_info.new_shape.advance(1);
+            if (this.#canPlaceShape(shape_info.new_shape, end_row)) {
                 //the shape has been moved one step down
-                retval.steps += 1;
+                shape_info.steps += 1;
             } else {
                 //we reached an obstacle before, revert to previous position
-                retval.new_shape.advance(-1);
+                shape_info.new_shape.advance(-1);
                 break
             }
         }
 
         //check if shape can be moved further
-        retval.new_shape.advance(1);
-        retval.blocked = !this.#canPlaceShape(retval.new_shape, end_row);
-        retval.new_shape.advance(-1);
+        shape_info.new_shape.advance(1);
+        shape_info.blocked = !this.#canPlaceShape(shape_info.new_shape, end_row);
+        shape_info.new_shape.advance(-1);
 
-        if (retval.steps > 0) {
-            this.#printShape(retval.new_shape, retval.new_shape.color);
+        if (shape_info.steps > 0) {
+            this.#printShape(shape_info.new_shape, shape_info.new_shape.color);
         } else {
             this.#printShape(params.shape, params.shape.color);
         }
-        return retval;
+        return shape_info;
     }
 
     #canPlaceShape(shape, end_row) {
@@ -197,17 +197,16 @@ export default class Board {
     }
 
     /*
-        compact the board
+        compact the board and return the number of spliced rows
     */
     compact() {
+        let row_count = 0;
         let row = this.#findCompleteRow();
-        if (row > -1) {
-            //console.log('Board.compact: ' + JSON.stringify(this.canvas.pixels));
-        }
         while (row > -1) {
+            row_count += 1;
             this.#spliceRow(row);
             row = this.#findCompleteRow();
         }
-
+        return row_count;
     }
 }

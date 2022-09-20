@@ -30,16 +30,19 @@ export default class GameView extends React.Component {
 
     handleNewGame() {
         console.log('GameView.handleNewGame: ... ');
+
+        //prepare the tracker & the board
         let new_tracker = new Tracker(this.state.tracker);
         new_tracker.newGame();
-
         let new_board = new Board();
-        let result = new_board.introduceShape(this.shapeGenerator.getNext());
+
+        //introduce the new shape
+        let shape_info = new_board.introduceShape(this.shapeGenerator.getNext());
         new_tracker.addShape();
 
         this.#updateState({
             board: new_board,
-            shape: result.new_shape,
+            shape: shape_info.new_shape,
             tracker: new_tracker
         });
     }
@@ -69,16 +72,20 @@ export default class GameView extends React.Component {
         if (this.#isGameOver()) {
             console.log('GameView.handleShapeDrop: game over');
         } else {
-            let new_board = new Board(this.state.board);
-            let result = new_board.dropShape(this.state.shape);
+            //prepare the tracker & the board
             let new_tracker = new Tracker(this.state.tracker);
+            let new_board = new Board(this.state.board);
+
+            //drop the shape all the way down
+            let shape_info = new_board.dropShape(this.state.shape);
             new_tracker.blocked = true;
+
             this.#updateState({
                 board: new_board,
-                shape: result.new_shape,
+                shape: shape_info.new_shape,
                 tracker: new_tracker
             });
-            //console.log('GameView.handleShapeDrop: droped ' + JSON.stringify(result.new_shape));
+            //console.log('GameView.handleShapeDrop: droped ' + JSON.stringify(shape_info.new_shape));
         }
     }
 
@@ -91,45 +98,55 @@ export default class GameView extends React.Component {
             console.log('GameView.handleDbgClockTick: game over');
         } else {
             if (this.state.tracker.blocked) {
-                // abandon the old shape and introduce a new one
+                //prepare the tracker
                 let new_tracker = new Tracker(this.state.tracker);
                 new_tracker.blocked = false;
 
-                let new_board = this.#buildCompactedBoard();
+                //compact the board
+                let board_info = this.#buildCompactedBoard();
+                new_tracker.addLines(board_info.line_count);
 
-                let result = new_board.introduceShape(this.shapeGenerator.getNext());
+                // abandon the old shape and introduce a new one
+                let shape_info = board_info.new_board.introduceShape(
+                    this.shapeGenerator.getNext());
                 new_tracker.addShape();
 
                 this.#updateState({
-                    board: new_board,
-                    shape: result.new_shape,
+                    board: board_info.new_board,
+                    shape: shape_info.new_shape,
                     tracker: new_tracker
                 });
-                console.log('GameView.handleDbgClockTick: introduced ' + JSON.stringify(result));
+                console.log('GameView.handleDbgClockTick: introduced ' + JSON.stringify(shape_info));
             } else {
-                // advance the current shape one step down
+                //prepare the tracker
                 let new_tracker = new Tracker(this.state.tracker);
-                let new_board = this.#buildCompactedBoard();
-                let result = new_board.advanceShape({
+
+                //compact the board
+                let board_info = this.#buildCompactedBoard();
+                new_tracker.addLines(board_info.line_count);
+
+                // advance the current shape one step down
+                let shape_info = board_info.new_board.advanceShape({
                     shape: this.state.shape,
                     max_steps: 1
                 });
-                new_tracker.blocked = result.blocked;
-                new_tracker.addSteps(result.steps);
+                new_tracker.blocked = shape_info.blocked;
+                new_tracker.addSteps(shape_info.steps);
+
                 this.#updateState({
-                    board: new_board,
-                    shape: result.new_shape,
+                    board: board_info.new_board,
+                    shape: shape_info.new_shape,
                     tracker: new_tracker
                 });
-                //console.log('GameView.handleDbgClockTick: advanced ' + JSON.stringify(result));
+                //console.log('GameView.handleDbgClockTick: advanced ' + JSON.stringify(shape_info));
             }
         }
     }
 
     #buildCompactedBoard() {
         let new_board = new Board(this.state.board);
-        new_board.compact();
-        return new_board;
+        let line_count = new_board.compact();
+        return {new_board: new_board, line_count: line_count};
     }
 
     #updateState(params) {

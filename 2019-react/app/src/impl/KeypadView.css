@@ -5,3 +5,21 @@
     padding: 10px 10px 10px 0px;
     vertical-align: top;
 }
+
+.KeypadView a {
+    text-decoration: none;
+}
+
+.KeypadView table {
+    margin: 0 auto;
+    border: 0px;
+    border-collapse: collapse;
+}
+
+.KeypadView .boxed {
+    border: 1px groove gray;
+}
+
+.KeypadView .spacer {
+    height: 5px;
+}

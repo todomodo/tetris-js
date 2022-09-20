@@ -8,7 +8,8 @@ test('compacting', () => {
         [0, 0, 0, 0, 5, 5]];
     let canvas = new Canvas({pixels: pixels});
     let board = new Board({canvas: canvas});
-    board.compact();
+    let retval = board.compact();
+    expect(retval).toBe(1);
     expect(board.canvas.pixels[1]).toStrictEqual([0, 0, 0, 0, 0, 0]);
     expect(board.canvas.pixels[2]).toStrictEqual([0, 0, 0, 0, 5, 5]);
 });
