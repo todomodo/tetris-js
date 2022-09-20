@@ -202,6 +202,9 @@ export default class Board {
     */
     compact() {
         let row = this.#findCompleteRow();
+        if (row>-1) {
+            //console.log('Board.compact: ' + JSON.stringify(this.canvas.pixels));
+        }
         while (row > -1) {
             this.#spliceRow(row);
             row = this.#findCompleteRow();

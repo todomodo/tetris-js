@@ -30,10 +30,10 @@ export default class GameView extends React.Component {
 
     handleNewGame() {
         console.log('GameView.handleNewGame: ... ');
-        let newBoard = new Board();
-        let result = newBoard.introduceShape(this.shapeGenerator.getNext());
+        let new_board = new Board();
+        let result = new_board.introduceShape(this.shapeGenerator.getNext());
         this.#updateState({
-            board: newBoard,
+            board: new_board,
             shape: result.new_shape,
             blocked: false,
             status: "STARTED"
@@ -48,11 +48,11 @@ export default class GameView extends React.Component {
             console.log('GameView.handleShapeMotion: game over');
         } else {
             //console.log('GameView.handleShapeMotion: ' + JSON.stringify(this.state.shape));
-            let newBoard = new Board(this.state.board);
+            let new_board = new Board(this.state.board);
             let new_shape = new Shape(this.state.shape);
             new_shape.transform(event.dx, event.dy, event.da);
-            if (newBoard.moveShape(this.state.shape, new_shape)) {
-                this.#updateState({board: newBoard, shape: new_shape});
+            if (new_board.moveShape(this.state.shape, new_shape)) {
+                this.#updateState({board: new_board, shape: new_shape});
             }
         }
     }
@@ -65,9 +65,9 @@ export default class GameView extends React.Component {
         if (this.#isGameOver()) {
             console.log('GameView.handleShapeDrop: game over');
         } else {
-            let newBoard = new Board(this.state.board);
-            let result = newBoard.dropShape(this.state.shape);
-            this.#updateState({board: newBoard, shape: result.new_shape, blocked: true});
+            let new_board = new Board(this.state.board);
+            let result = new_board.dropShape(this.state.shape);
+            this.#updateState({board: new_board, shape: result.new_shape, blocked: true});
             //console.log('GameView.handleShapeDrop: droped ' + JSON.stringify(result.new_shape));
         }
     }
@@ -78,33 +78,42 @@ export default class GameView extends React.Component {
 
     handleDbgCompactBoard() {
         console.log('GameView.handleDbgCompactBoard');
-        let newBoard = new Board(this.state.board);
-        newBoard.compact();
-        this.setState({board: newBoard});
+        this.#updateState({board: this.#buildCompactedBoard()});
     }
 
     handleDbgClockTick() {
         if (this.#isGameOver()) {
             console.log('GameView.handleDbgClockTick: game over');
         } else {
-            this.state.board.compact();
             if (this.state.shape.blocked) {
                 // abandon the old shape and introduce a new one
-                let newBoard = new Board(this.state.board);
-                let result = newBoard.introduceShape(this.shapeGenerator.getNext());
-                this.#updateState({board: newBoard, shape: result.new_shape, blocked: false});
+                let new_board = this.#buildCompactedBoard();
+                let result = new_board.introduceShape(this.shapeGenerator.getNext());
+                this.#updateState({
+                    board: new_board, 
+                    shape: result.new_shape, 
+                    blocked: false});
                 console.log('GameView.handleDbgClockTick: introduced ' + JSON.stringify(result));
             } else {
                 // advance the current shape one step down
-                let newBoard = new Board(this.state.board);
-                let result = newBoard.advanceShape({
+                let new_board = this.#buildCompactedBoard();
+                let result = new_board.advanceShape({
                     shape: this.state.shape,
                     max_steps: 1
                 });
-                this.#updateState({board: newBoard, shape: result.new_shape, blocked: result.blocked});
-                console.log('GameView.handleDbgClockTick: advanced ' + JSON.stringify(result));
+                this.#updateState({
+                    board: new_board, 
+                    shape: result.new_shape, 
+                    blocked: result.blocked});
+                //console.log('GameView.handleDbgClockTick: advanced ' + JSON.stringify(result));
             }
         }
+    }
+
+    #buildCompactedBoard() {
+        let new_board = new Board(this.state.board);
+        new_board.compact();
+        return new_board;
     }
 
     #updateState(params) {
