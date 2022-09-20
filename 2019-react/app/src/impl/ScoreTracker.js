@@ -1,4 +1,4 @@
-export default class Tracker {
+export default class ScoreTracker {
 
     constructor(props) {
         let params = props ?? {};
@@ -24,10 +24,12 @@ export default class Tracker {
         this.blocked = false;
         this.shapes_count = 0;
         this.steps_count = 0;
+        this.lines_count = 0;
     }
 
-    addShape() {
+    addShape(shape) {
         this.shapes_count += 1;
+        console.log('ScoreTracker.addShape: ' + JSON.stringify(shape));
     }
 
     addSteps(count) {

@@ -12,7 +12,7 @@ import KeypadView from './KeypadView';
 import Shape from "./Shape";
 import ShapeView from "./ShapeView";
 import ShapeGenerator from "./ShapeGenerator";
-import Tracker from "./Tracker";
+import ScoreTracker from "./ScoreTracker";
 
 export default class GameView extends React.Component {
     constructor(props) {
@@ -22,7 +22,7 @@ export default class GameView extends React.Component {
         this.state = {
             board: null,
             shape: null,
-            tracker: new Tracker()
+            tracker: new ScoreTracker()
         };
         this.handleNewGame = this.handleNewGame.bind(this);
         this.handleDbgClockTick = this.handleDbgClockTick.bind(this);
@@ -32,13 +32,13 @@ export default class GameView extends React.Component {
         console.log('GameView.handleNewGame: ... ');
 
         //prepare the tracker & the board
-        let new_tracker = new Tracker(this.state.tracker);
+        let new_tracker = new ScoreTracker(this.state.tracker);
         new_tracker.newGame();
         let new_board = new Board();
 
         //introduce the new shape
         let shape_info = new_board.introduceShape(this.shapeGenerator.getNext());
-        new_tracker.addShape();
+        new_tracker.addShape(shape_info.new_shape);
 
         this.#updateState({
             board: new_board,
@@ -73,7 +73,7 @@ export default class GameView extends React.Component {
             console.log('GameView.handleShapeDrop: game over');
         } else {
             //prepare the tracker & the board
-            let new_tracker = new Tracker(this.state.tracker);
+            let new_tracker = new ScoreTracker(this.state.tracker);
             let new_board = new Board(this.state.board);
 
             //drop the shape all the way down
@@ -99,7 +99,7 @@ export default class GameView extends React.Component {
         } else {
             if (this.state.tracker.blocked) {
                 //prepare the tracker
-                let new_tracker = new Tracker(this.state.tracker);
+                let new_tracker = new ScoreTracker(this.state.tracker);
                 new_tracker.blocked = false;
 
                 //compact the board
@@ -109,17 +109,16 @@ export default class GameView extends React.Component {
                 // abandon the old shape and introduce a new one
                 let shape_info = board_info.new_board.introduceShape(
                     this.shapeGenerator.getNext());
-                new_tracker.addShape();
+                new_tracker.addShape(shape_info.new_shape);
 
                 this.#updateState({
                     board: board_info.new_board,
                     shape: shape_info.new_shape,
                     tracker: new_tracker
                 });
-                console.log('GameView.handleDbgClockTick: introduced ' + JSON.stringify(shape_info));
             } else {
                 //prepare the tracker
-                let new_tracker = new Tracker(this.state.tracker);
+                let new_tracker = new ScoreTracker(this.state.tracker);
 
                 //compact the board
                 let board_info = this.#buildCompactedBoard();
