@@ -84,7 +84,7 @@ export default class Board {
     */
     dropShape(shape) {
         //console.log('Board.dropShape ' + JSON.stringify(shape));
-        return this.advanceShape(shape, this.canvas.height, this.config.finish_row)
+        return this.advanceShape({shape: shape});
     }
 
     /*
@@ -96,40 +96,49 @@ export default class Board {
         for (let row = 0; row < this.config.start_row; row++) {
             this.#clearRow(row);
         }
-        return this.advanceShape(shape, this.canvas.height, this.config.start_row)
+        return this.advanceShape({
+            shape: shape,
+            end_row: this.config.start_row
+        });
     }
 
     /*
-        Advance (e.g. move down) shape up to maxSteps until it reaches certain line
+        Advance (e.g. move down) shape up to max_steps until it reaches certain end_row
         or encounters an obstacle.
     */
-    advanceShape(shape, maxSteps, boundaryLine) {
+    advanceShape(params) {
         let retval = {
             blocked: false, //true if shape reached an obstacle
             moved: false, //true if shape was moved
-            newShape: new Shape(shape)
+            new_shape: new Shape(params.shape)
         }
 
-        this.#eraseShape(shape);
+        let max_steps = params.max_steps ?? this.canvas.height;
+        let end_row = params.end_row ?? this.canvas.height;
 
-        //advance up to maxSteps util encountering an obstacle
-        for (let i = 0; i < maxSteps; i++) {
-            retval.newShape.advance(1);
-            if (this.#canPlaceShape(retval.newShape, boundaryLine)) {
+        this.#eraseShape(params.shape);
+
+        //advance up to max_steps util encountering an obstacle
+        for (let i = 0; i < max_steps; i++) {
+            retval.new_shape.advance(1);
+            if (this.#canPlaceShape(retval.new_shape, end_row)) {
                 //the shape has been moved
                 retval.moved = true;
             } else {
-                //we reached an obstacle, revert to previous position
-                retval.newShape.advance(-1);
+                //we reached an obstacle before reaching the end_row
+                // revert to previous position
+                retval.new_shape.advance(-1);
                 retval.blocked = true;
                 break
             }
         }
 
+        //check if we have reached the end_row
+
         if (retval.moved) {
-            this.#printShape(retval.newShape, retval.newShape.color);
+            this.#printShape(retval.new_shape, retval.new_shape.color);
         } else {
-            this.#printShape(shape, shape.color);
+            this.#printShape(params.shape, params.shape.color);
         }
         return retval;
     }
