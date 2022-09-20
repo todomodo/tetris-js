@@ -9,6 +9,7 @@ import BoardView from './BoardView';
 import Config from "./Config";
 import HeaderView from './HeaderView';
 import KeypadView from './KeypadView';
+import PulseGenerator from './PulseGenerator';
 import Shape from "./Shape";
 import ShapeView from "./ShapeView";
 import ShapeGenerator from "./ShapeGenerator";
@@ -24,8 +25,10 @@ export default class GameView extends React.Component {
             shape: null,
             tracker: new ScoreTracker()
         };
+
+
         this.handleNewGame = this.handleNewGame.bind(this);
-        this.handleDbgClockTick = this.handleDbgClockTick.bind(this);
+        this.handlePulse = this.handlePulse.bind(this);
     }
 
     handleNewGame() {
@@ -48,7 +51,7 @@ export default class GameView extends React.Component {
     }
 
     /*
-        called by controller to handle shape motion events
+        called by keypad to handle shape motion events
     */
     handleShapeMotion = (event) => {
         if (this.#isGameOver()) {
@@ -66,7 +69,7 @@ export default class GameView extends React.Component {
 
 
     /*
-        called by the controller to request shape drop
+        called by the keypad to request shape drop
     */
     handleShapeDrop = (event) => {
         if (this.#isGameOver()) {
@@ -89,13 +92,9 @@ export default class GameView extends React.Component {
         }
     }
 
-    /*
-        debug methods
-    */
-
-    handleDbgClockTick() {
+    handlePulse() {
         if (this.#isGameOver()) {
-            console.log('GameView.handleDbgClockTick: game over');
+            console.log('GameView.handlePulse: game over');
         } else {
             if (this.state.tracker.blocked) {
                 //prepare the tracker
@@ -137,7 +136,7 @@ export default class GameView extends React.Component {
                     shape: shape_info.new_shape,
                     tracker: new_tracker
                 });
-                //console.log('GameView.handleDbgClockTick: advanced ' + JSON.stringify(shape_info));
+                //console.log('GameView.handlePulse: advanced ' + JSON.stringify(shape_info));
             }
         }
     }
@@ -182,7 +181,10 @@ export default class GameView extends React.Component {
                     onNewGame={this.handleNewGame}
                     onShapeMotion={this.handleShapeMotion}
                     onShapeDrop={this.handleShapeDrop}
-                    onDbgClockTick={this.handleDbgClockTick}
+                />
+                <PulseGenerator
+                    tracker={this.state.tracker}
+                    onPulse={this.handlePulse}
                 />
             </div>
         );

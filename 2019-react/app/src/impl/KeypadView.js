@@ -48,9 +48,6 @@ export default class KeypadView extends React.Component {
                 //console.log('KeypadView.handleKeyDown: start new game');
                 this.props.onNewGame();
                 break;
-            case 84:
-                //console.log('t');
-                this.props.onDbgClockTick();
                 break;
             default:
             // console.warn('KeypadView.handleKeyDown: unhandled keycode ' +  event.keyCode);
