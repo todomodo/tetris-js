@@ -13,12 +13,10 @@ export default class ShapeView extends React.Component {
     }
 
     #getShape() {
-        if (this.props.current_shape === null) {
+        if (this.props.shapes[0] === null) {
             return null;
-        } else if (this.props.current_shape.blocked) {
-            return new Shape(this.props.next_shape);
         } else {
-            return new Shape(this.props.current_shape);
+            return new Shape(this.props.shapes[0]);
         }
     }
 

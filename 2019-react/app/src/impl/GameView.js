@@ -134,8 +134,7 @@ export default class GameView extends React.Component {
                     board={this.state.board}
                 />
                 <ShapeView
-                    current_shape={this.state.shape}
-                    next_shape={this.shapeGenerator.peekNext()}
+                    shapes={[this.state.shape]}
                 />
                 <KeypadView
                     shape={this.state.shape}
