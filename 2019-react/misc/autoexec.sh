@@ -21,7 +21,7 @@ server)
   # what's set as CMD in the Dockerfile
   echo "***default***"
   echo "PWD: $PWD"
-  echo "hints: ['npm test']"
+  echo "hints: ['npm install' 'npm start' 'npm test']"
   exec "$@"
   ;;
 esac
