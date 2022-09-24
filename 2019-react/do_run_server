@@ -17,6 +17,6 @@ echo
 
 docker run -it --rm \
   --name $CONTAINER_NAME \
-  -v $APP_ROOT:/root/app \
+  -v $APP_ROOT:/usr/src/app \
   -p 3000:3000 \
   tetjs-rapidant server

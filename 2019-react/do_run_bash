@@ -8,4 +8,6 @@
 #   * exposed ports are not mapped
 #   * the app folder is directly mounted
 #
-docker run -it --rm -v $PWD/app:/root/app tetjs-rapidant bash
+docker run -it --rm \
+  -v $PWD/app:/usr/src/app \
+  tetjs-rapidant bash

@@ -2,7 +2,7 @@
 set -e
 
 # change into the app folder
-APP_ROOT=/root/app
+APP_ROOT=/usr/src/app
 cd $APP_ROOT
 
 # see what needs to be run
