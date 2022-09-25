@@ -23,7 +23,7 @@ RUN chmod +x /usr/bin/autoexec.sh
 RUN if [ ${HOST_GID} -eq 0 ]; then echo 'Environment variable HOST_GID must be set. Exiting.'; exit 1; fi
 RUN \
     export CONTAINER_GROUPNAME=$(cat /etc/group | grep ":$HOST_GID:" | cut -d ":" -f 1) && \
-    if [ -z "$CONTAINER_GROUPNAME"} ]; then groupadd --gid ${HOST_GID} todomodo; fi
+    if [ -z "$CONTAINER_GROUPNAME" ]; then groupadd --gid ${HOST_GID} todomodo; fi
 
 # create user
 RUN if [ ${HOST_UID} -eq 0 ]; then echo 'Environment variable USER_ID must be set. Exiting.'; exit 1; fi
