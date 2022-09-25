@@ -5,8 +5,8 @@
 export default class Config {
 
     constructor() {
-        this.width = 6; //0..5
-        this.height = 20; //0..14
+        this.width = 12; //0..5
+        this.height = 22; //0..14
         this.start_row = 4; //0-based
         this.color_styles = [
             'color-null',

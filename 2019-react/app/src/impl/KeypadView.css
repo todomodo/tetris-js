@@ -1,8 +1,7 @@
 .KeypadView {
-    grid-row: 3;
+    grid-row: 3/4;
     grid-column: 2;
     border: 1px dotted gray;
-    padding: 10px 10px 10px 0px;
     vertical-align: top;
 }
 

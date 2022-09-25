@@ -9,6 +9,7 @@
 .BoardView table {
     margin: 0 auto;
     border: 1px solid black;
+    border-spacing: 0px;
 }
 
 .BoardView td {
@@ -17,12 +18,12 @@
     height: 23px;
     width: 20px;
     padding: 0;
-    border: 3px groove gray;
+    border: 1px groove gray;
 }
 
 .BoardView .color-null {
     background-color: white;
-    border: 3px solid white;
+    border: 1px solid white;
 }
 
 .BoardView .color-0 {

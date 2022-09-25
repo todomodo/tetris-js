@@ -1,5 +1,5 @@
 .GameView {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: 300px 200px;
+    grid-template-columns: 300px 170px;
 }
