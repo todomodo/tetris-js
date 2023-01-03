@@ -4,12 +4,12 @@ Starting 2017, I began encountering React at my job. Implementing the old tetris
 ## Setup
 After cloning the repo, build the docker container:
 ```
-./do_build
+./bin/do_build
 ```
 
 Then start it:
 ```
-./do_run_server
+./bin/do_run_server
 ```
 
 ... and finally, navigate to http://localhost:3000/
