@@ -1,4 +1,5 @@
-FROM ubuntu:latest
+
+FROM arm64v8/ubuntu:latest
 
 ARG HOST_UID
 ARG HOST_GID
@@ -16,7 +17,7 @@ RUN n stable
 RUN npm -g install create-react-app
 
 # Install the autoexec script, to be ran with every container start.
-COPY ./misc/autoexec.sh /usr/bin/
+COPY ./bin/assets/autoexec.sh /usr/bin/
 RUN chmod +x /usr/bin/autoexec.sh
 
 # create group

@@ -3,6 +3,7 @@
 # $cat ~/.bashrc | grep HOST_
 #   export HOST_UID=$(id -u)
 #   export HOST_GID=$(id -g)
+
 docker image build \
   --build-arg HOST_UID=$HOST_UID \
   --build-arg HOST_GID=$HOST_GID \
