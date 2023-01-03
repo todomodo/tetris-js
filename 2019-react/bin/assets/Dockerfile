@@ -16,7 +16,7 @@ RUN n stable
 RUN npm -g install create-react-app
 
 # Install the autoexec script, to be ran with every container start.
-COPY autoexec.sh /usr/bin/
+COPY ./bin/assets/autoexec.sh /usr/bin/
 RUN chmod +x /usr/bin/autoexec.sh
 
 # create group
