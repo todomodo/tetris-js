@@ -11,7 +11,9 @@ server)
   # Run the container in NPM dev server mode
   echo "***server***"
   echo "PWD: $PWD"
-
+  echo "PLATFORM: $(uname -m)"
+  echo "$(lsb_release -d)"
+  echo
   # install the NPM modules
   npm install
   npm start
@@ -21,7 +23,10 @@ server)
   # what's set as CMD in the Dockerfile
   echo "***default***"
   echo "PWD: $PWD"
-  echo "hints: ['npm install' 'npm start' 'npm test']"
+  echo "PLATFORM: $(uname -m)"
+  echo "$(lsb_release -d)"
+  echo "hints: ['npm install' 'npm start' 'npm test' 'npm upgrade']"
+  echo
   exec "$@"
   ;;
 esac
