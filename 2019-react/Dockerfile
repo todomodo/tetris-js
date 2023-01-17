@@ -6,9 +6,6 @@
 #   docker build --tag tetjs-rapidant --build-arg HOST_PLATFORM=arm64v8/ubuntu .
 #   docker build --tag tetjs-rapidant --build-arg HOST_PLATFORM=amd64/ubuntu .
 #
-# Build with custom HOST_UID/$HOST_GID:
-#   docker build --tag tetjs-rapidant --build-arg HOST_UID=$HOST_UID --build-arg HOST_GID=$HOST_GID .
-#
 # Run with interractive bash
 #   docker run -it -v $PWD/app:/usr/src/app tetjs-rapidant bash
 #
@@ -18,10 +15,6 @@
 ARG HOST_PLATFORM=ubuntu
 
 FROM ${HOST_PLATFORM}:latest
-
-# Docker arguments
-ARG HOST_UID=0
-ARG HOST_GID=0
 
 # local environment variables
 ENV \
