@@ -25,7 +25,7 @@ server)
   echo "PWD: $PWD"
   echo "PLATFORM: $(uname -m)"
   echo "$(lsb_release -d)"
-  echo "hints: ['npm install' 'npm start' 'npm test']"
+  echo "hints: ['npm install' 'npm start' 'npm test' 'npm upgrade']"
   echo
   exec "$@"
   ;;
