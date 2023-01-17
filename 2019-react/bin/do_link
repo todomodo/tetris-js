@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# figure out Dockerfile symlink based on mac architecture
+if [[ $(uname -m) == 'arm64' ]]; then
+  src_path='bin/assets/Dockerfile.arm64v8'
+else
+  src_path='bin/assets/Dockerfile'
+fi
+
+# run the command
+RUN_CMD="ln -nsf $src_path Dockerfile"
+echo -e "\t$RUN_CMD"
+$RUN_CMD

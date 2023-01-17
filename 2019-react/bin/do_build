@@ -1,16 +1,13 @@
 #!/bin/bash
-#
-# Usage:
-#   bin/do_build
-#   bin/do_build --no-cache
-#
-# Prerequisites:
-#   $cat ~/.bashrc | grep HOST
-#     export HOST_UID=$(id -u)
-#     export HOST_GID=$(id -g)
-#
+
+# $cat ~/.bashrc | grep HOST_
+#   export HOST_UID=$(id -u)
+#   export HOST_GID=$(id -g)
+
 docker image build \
   --build-arg HOST_UID=$HOST_UID \
   --build-arg HOST_GID=$HOST_GID \
-  $1 \
   --tag=tetjs-rapidant .
+
+
+#docker build --no-cache --tag=tetjs-rapidant .
