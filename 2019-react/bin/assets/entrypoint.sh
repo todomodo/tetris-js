@@ -11,12 +11,12 @@ print_info() {
 }
 
 print_hints() {
-  echo "hints: ['npm install' 'npm start' 'npm run dev' 'npm test' 'npm upgrade']"
+  echo "hints: ['npm install' 'npm start' 'npm test' 'npm upgrade']"
 }
 
 npm_run_dev() {
     npm install
-    npm run dev
+    npm start
 }
 
 # change into the app folder
