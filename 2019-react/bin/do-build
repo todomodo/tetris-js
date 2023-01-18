@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # Usage:
-#   bin/do_build
-#   bin/do_build --no-cache
+#   bin/do-build
+#   bin/do-build --no-cache
 #
 # Prerequisites:
 #   $cat ~/.bashrc | grep HOST

@@ -1,31 +1,43 @@
 #!/bin/bash
 set -e
 
+print_info() {
+  echo "PWD: $PWD"
+  echo "USER: $USER_NAME"
+  echo "platform: $(uname -m)"
+  echo "$(lsb_release -d)"
+  echo "node version: $(node --version)"
+  echo "npm version: $(npm --version)"
+}
+
+print_hints() {
+  echo "hints: ['npm install' 'npm start' 'npm run dev' 'npm test' 'npm upgrade']"
+}
+
+npm_run_dev() {
+    npm install
+    npm run dev
+}
+
 # change into the app folder
 APP_ROOT=/usr/src/app
 cd $APP_ROOT
 
-# see what needs to be run
+# see what needs to be run based on the first command line parameter
 case "$1" in
-server)
-  # Run the container in NPM dev server mode
-  echo "***server***"
-  echo "PWD: $PWD"
-  echo "PLATFORM: $(uname -m)"
-  echo "$(lsb_release -d)"
+"")
+  # When no parameters, we execute our default behavior - run in
+  # dev server mode.
+  echo "***dev***"
+  print_info
   echo
-  # install the NPM modules
-  npm install
-  npm start
+  npm_run_dev
   ;;
 *)
-  # Default behavior is to exec the container's main process, e.g.
-  # what's set as CMD in the Dockerfile
+  # When there is a parameter - pass the command line to the container
   echo "***default***"
-  echo "PWD: $PWD"
-  echo "PLATFORM: $(uname -m)"
-  echo "$(lsb_release -d)"
-  echo "hints: ['npm install' 'npm start' 'npm test' 'npm upgrade']"
+  print_info
+  print_hints
   echo
   exec "$@"
   ;;

@@ -1,7 +1,6 @@
 #!/bin/bash
 $
-# Run container in named server mode. Use this whne developing
-# in REACT
+# Run container in named server mode. Use this when developing
 #
 #   * the container is named
 #   * the npm/web server is running in dev mode

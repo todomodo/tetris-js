@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-# Run container in anonymous bash mode. Use this when troubleshooting
-# container issues.
+# Run container in anonymous bash mode.
 #
 #   * the container is nameless
 #   * there is no npm/web server

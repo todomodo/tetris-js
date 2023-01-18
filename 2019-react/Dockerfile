@@ -29,16 +29,22 @@ ENV \
     APP_NAME="tetris" \
     USER_NAME="todomodo"
 
-# general packages
-RUN apt-get update
-RUN apt-get -y upgrade
-RUN apt-get install -y curl nano wget npm lsb-release
+# updates OS packages
+RUN \
+    apt-get update && \
+    apt-get -y upgrade && \
+    apt-get install -y lsb-release nano curl build-essential
+
+# Install nodejs from nodesource since it has the latest version
+# The nodejs package includes both 'node' and 'npm' binaries.
+RUN \
+    curl -fsSL https://deb.nodesource.com/setup_19.x | bash - && \
+    apt-get install -y nodejs
 
 # install react packages
-RUN npm cache clean -f
-RUN npm install -g n
-RUN n stable
-RUN npm -g install create-react-app
+RUN \
+    npm cache clean -f && \
+    npm -g install create-react-app
 
 # create group
 RUN if [ ${HOST_GID} -eq 0 ]; \
@@ -75,8 +81,9 @@ RUN chown --changes --silent --no-dereference --recursive ${HOST_UID}:${HOST_GID
 USER $USER_NAME
 
 # show APP_NAME on command prompt
-RUN echo >> /home/$USER_NAME/.bashrc
-RUN echo "PS1='\[\033[01;32m\]\${debian_chroot:+(\$debian_chroot)}\u@${APP_NAME}\[\033[00m\]:\w\$ '" >> /home/$USER_NAME/.bashrc
+RUN \
+    echo >> /home/$USER_NAME/.bashrc  && \
+    echo "PS1='\[\033[01;32m\]\${debian_chroot:+(\$debian_chroot)}\u@${APP_NAME}\[\033[00m\]:\w\$ '" >> /home/$USER_NAME/.bashrc
 
 
 # Expose port 3000
