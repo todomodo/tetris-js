@@ -9,8 +9,26 @@
 #     export HOST_UID=$(id -u)
 #     export HOST_GID=$(id -g)
 #
+
+# set the compose variables
+if [ -n "$BASE_IMAGE" ]; then
+  # variables already set, skip
+  echo -e "\tcompose variables already set"
+elif [ "$(uname -m)" = "arm64" ]; then
+  export BASE_IMAGE="arm64v8/ubuntu:latest"
+elif [ "$(uname -m)" = "x86_64" ]; then
+  export BASE_IMAGE="ubuntu:latest"
+else
+  echo -e "\tERROR: unknown BASE_IMAGE $(uname -m)"
+  exit 1
+fi
+
+echo -e "\tBASE_IMAGE=$BASE_IMAGE"
+BASE_IMAGE
+
 docker image build \
   --build-arg HOST_UID=$HOST_UID \
   --build-arg HOST_GID=$HOST_GID \
+  --build-arg BASE_IMAGE=$BASE_IMAGE \
   $1 \
   --tag=tetjs-rapidant .

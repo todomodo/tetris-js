@@ -15,9 +15,9 @@
 # Run with command line
 #   docker run --rm -v $PWD/app:/usr/src/app tetjs-rapidant [command line]
 #
-ARG HOST_PLATFORM=ubuntu
+ARG BASE_IMAGE=ubuntu:latest
 
-FROM ${HOST_PLATFORM}:latest
+FROM ${BASE_IMAGE}
 
 # Docker arguments
 ARG HOST_UID=0
@@ -46,6 +46,9 @@ RUN \
     npm cache clean -f && \
     npm -g install create-react-app
 
+# Install the app locally, in case we descide to not use mapped drives
+COPY app $APP_ROOT
+
 # create local user/group & take ownership of the source files
 RUN if [ ${HOST_GID} -eq 0 ]; \
     then \
@@ -69,10 +72,6 @@ RUN if [ ${HOST_GID} -eq 0 ]; \
 # by the native OS
 COPY bin/assets/entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh && dos2unix /usr/bin/entrypoint.sh
-
-# Install the app locally, in case we descide to not use mapped drives
-COPY app $APP_ROOT
-RUN chown --changes --silent --no-dereference --recursive ${HOST_UID}:${HOST_GID} $APP_ROOT
 
 # switch to the newly created user
 USER $USER_NAME
