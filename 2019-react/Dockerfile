@@ -33,12 +33,12 @@ ENV \
 RUN \
     apt-get update && \
     apt-get -y upgrade && \
-    apt-get install -y lsb-release nano curl build-essential
+    apt-get install -y lsb-release nano curl build-essential dos2unix
 
 # Install nodejs from nodesource since it has the latest version
 # The nodejs package includes both 'node' and 'npm' binaries.
 RUN \
-    curl -fsSL https://deb.nodesource.com/setup_19.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs
 
 # install react packages
@@ -46,32 +46,29 @@ RUN \
     npm cache clean -f && \
     npm -g install create-react-app
 
-# create group
+# create local user/group & take ownership of the source files
 RUN if [ ${HOST_GID} -eq 0 ]; \
     then \
-      echo "Argument HOST_GID not set, using default group" >> /build.log; \
+      # When HOST_GID is not set we do the default user creation
+      echo "Argument HOST_GID not set, using defaults" >> /build.log; \
+      useradd --create-home --shell /bin/bash $USER_NAME; \
+      chown --recursive ${USER_NAME}:${USER_NAME} $APP_ROOT; \
     else \
+      # When HOST_GID is set we create an user with specific groupd and user id \
+      # note that if setting HOST_GID, you also need to set HOST_UID
       echo "Argument HOST_GID=${HOST_GID}" >> /build.log; \
       export CONTAINER_GROUPNAME=$(cat /etc/group | grep ":$HOST_GID:" | cut -d ":" -f 1) && \
       if [ -z "$CONTAINER_GROUPNAME" ]; \
         then groupadd --gid ${HOST_GID} $USER_NAME; \
       fi; \
-    fi
-
-
-# create user
-RUN if [ ${HOST_UID} -eq 0 ]; \
-    then \
-      echo "Argument HOST_UID not set, creating with default group" >> /build.log; \
-      useradd --create-home --shell /bin/bash --uid ${HOST_UID} $USER_NAME; \
-    else \
-      echo "Argument HOST_UID=${HOST_UID}" >> /build.log; \
       useradd --create-home --no-user-group --shell /bin/bash --gid ${HOST_GID} --uid ${HOST_UID} $USER_NAME; \
+      chown --changes --silent --no-dereference --recursive ${HOST_UID}:${HOST_GID} $APP_ROOT; \
     fi
 
-# Install the entrypoint
+# Install the entrypoint. Also ensure proper line endings in case they have been mangled
+# by the native OS
 COPY bin/assets/entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/entrypoint.sh && dos2unix /usr/bin/entrypoint.sh
 
 # Install the app locally, in case we descide to not use mapped drives
 COPY app $APP_ROOT
