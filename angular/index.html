@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="tetrisApp">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tetris-js/AngularJS</title>
+    <meta name="description" content="tetris-js, a learning project from Drago Todorov">
+    <meta name="author" content="Drago Todorov">
+    <link rel="stylesheet" type="text/css" href="trt-style.css"/>
+</head>
+<body ng-controller="TetrisController" ng-keydown="handleKeyDown($event)" tabindex="0">
+
+    <div class="game-container">
+
+        <!-- Header -->
+        <div class="header">Tetris - AngularJS</div>
+
+        <!-- Board -->
+        <div class="board-panel">
+            <table>
+                <tbody>
+                    <tr ng-repeat="row in visibleRows() track by $index">
+                        <td ng-repeat="cell in row track by $index"
+                            ng-class="cellClass(cell)"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Next Shape Preview -->
+        <div class="preview-panel">
+            <table>
+                <tbody>
+                    <tr ng-repeat="row in previewGrid track by $index">
+                        <td ng-repeat="cell in row track by $index"
+                            ng-class="cellClass(cell)"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Keypad -->
+        <div class="keypad-panel">
+            <table>
+                <tbody>
+                    <tr>
+                        <td colspan="3" ng-style="{'background-color': statusColor()}">
+                            {{statusText()}}
+                        </td>
+                    </tr>
+                    <tr><td class="spacer" colspan="3"></td></tr>
+                    <tr>
+                        <td></td>
+                        <td><a ng-click="rotate()">Up</a></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><a ng-click="moveLeft()">Left</a></td>
+                        <td></td>
+                        <td><a ng-click="moveRight()">Right</a></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><a ng-click="drop()">Down</a></td>
+                        <td></td>
+                    </tr>
+                    <tr><td class="spacer" colspan="3"></td></tr>
+                    <tr>
+                        <td class="boxed" colspan="2">Elements</td>
+                        <td class="boxed">{{shapesCount}}</td>
+                    </tr>
+                    <tr>
+                        <td class="boxed" colspan="2">Lines</td>
+                        <td class="boxed">{{linesCount}}</td>
+                    </tr>
+                    <tr>
+                        <td class="boxed" colspan="2">Score</td>
+                        <td class="boxed">{{score}}</td>
+                    </tr>
+                    <tr>
+                        <td class="boxed" colspan="2">Level</td>
+                        <td class="boxed">{{speed}}</td>
+                    </tr>
+                    <tr><td class="spacer" colspan="3"></td></tr>
+                    <tr>
+                        <td></td>
+                        <td><a ng-click="newGame()">Space Bar</a></td>
+                        <td></td>
+                    </tr>
+                    <tr><td class="spacer" colspan="3"></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="angular.min.js"></script>
+    <script src="tetris.js"></script>
+</body>
+</html>

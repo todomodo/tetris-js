@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# Usage:
+#   bin/do-build
+#   bin/do-build --no-cache
+#
+
+docker image build \
+  $1 \
+  --tag=tetjs-rapidant .

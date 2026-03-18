@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# Run the container serving all Tetris versions on port 8080
+#
+CONTAINER_NAME=tetjs
+
+echo
+echo "starting $CONTAINER_NAME on http://localhost:8080 ..."
+echo
+
+docker run -it --rm \
+  --name $CONTAINER_NAME \
+  -p 8080:80 \
+  tetjs-rapidant

@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+# Run container with an interactive shell
+#
+docker run -it --rm \
+  tetjs-rapidant /bin/sh

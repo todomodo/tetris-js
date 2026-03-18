@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<link type="text/css" rel="stylesheet" href="tetris.css"/>
+		<script type="text/javascript" src="tetris.js"></script>
+		<script type="text/javascript">
+			document.addEventListener('keydown', function(evt) {
+				TRT_fnOnKeyDown(evt.key);
+			});
+		</script>
+	</head>
+	<body onload="TRT_fnRend(12,22)">
+		<div>
+			<table><tr>
+				<td><table id="TRT_ID_BOARD" class="game-table"></table></td>
+				<td class="spacer"></td>
+				<td><table id="TRT_ID_KEYPAD" class="game-table"></table></td>
+			</tr></table>
+		</div>		
+	</body>
+</html>

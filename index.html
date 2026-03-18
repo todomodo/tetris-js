@@ -1,21 +1,108 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>tetris-js</title>
-		<meta name="description" content="tetris-js, a learning project from Drago Todorov">
-		<meta name="author" content="Drago Todorov">
-	</head>
-
-	<body>
-		<h1>tetris-js</h1>
-		<p>The popular game of Tetris, implemented in JavaScript. There are several different versions:<p>
-		<ul>
-			<li><a href="./1999-original/index.html">1999-original</a></li> 
-			<li><a href="./2015-angular/index.html">2015-angular</a></li> 
-			<li><a href="./2019-react/index.html">2019-react</a></li>
-		</ul>
-		This project is open source, available on <a href="https://github.com/todomodo/tetris-js">GitHub</a>
-	</body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tetris JS</title>
+  <meta name="description" content="tetris-js, a learning project from Drago Todorov">
+  <meta name="author" content="Drago Todorov">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      max-width: 600px;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.2em;
+      color: #00d4ff;
+    }
+    p.subtitle {
+      color: #888;
+      margin-bottom: 2em;
+    }
+    .versions {
+      display: flex;
+      gap: 1.5em;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    a.card {
+      display: block;
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 10px;
+      padding: 2em 1.5em;
+      width: 140px;
+      text-decoration: none;
+      color: #e0e0e0;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    a.card:hover {
+      transform: translateY(-4px);
+      border-color: #00d4ff;
+    }
+    a.card .year {
+      font-size: 0.85em;
+      color: #666;
+    }
+    a.card .name {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin: 0.3em 0;
+      color: #00d4ff;
+    }
+    a.card .tech {
+      font-size: 0.8em;
+      color: #888;
+    }
+    .footer {
+      margin-top: 2.5em;
+      font-size: 0.85em;
+      color: #555;
+    }
+    .footer a {
+      color: #00d4ff;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tetris JS</h1>
+    <p class="subtitle">Three implementations across different eras of JavaScript</p>
+    <div class="versions">
+      <a class="card" href="./original/">
+        <div class="year">1999</div>
+        <div class="name">Original</div>
+        <div class="tech">Vanilla JS</div>
+      </a>
+      <a class="card" href="./angular/">
+        <div class="year">2015</div>
+        <div class="name">Angular</div>
+        <div class="tech">AngularJS</div>
+      </a>
+      <a class="card" href="./react/">
+        <div class="year">2019</div>
+        <div class="name">React</div>
+        <div class="tech">React 18</div>
+      </a>
+    </div>
+    <div class="footer">
+      Open source on <a href="https://github.com/todomodo/tetris-js">GitHub</a>
+    </div>
+  </div>
+</body>
 </html>
